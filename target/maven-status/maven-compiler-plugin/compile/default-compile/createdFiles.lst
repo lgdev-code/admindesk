@@ -1,0 +1,16 @@
+fr\lgdev\admindesk\repository\DemandeRepository.class
+fr\lgdev\admindesk\domain\Demande.class
+fr\lgdev\admindesk\web\HomeController.class
+fr\lgdev\admindesk\service\DemandeService.class
+fr\lgdev\admindesk\AdminDeskApplication.class
+fr\lgdev\admindesk\config\OpenApiConfig.class
+fr\lgdev\admindesk\web\GlobalExceptionHandler.class
+fr\lgdev\admindesk\dto\DemandeFormDTO.class
+fr\lgdev\admindesk\dto\DemandeResponseDTO.class
+fr\lgdev\admindesk\domain\StatutDemande.class
+fr\lgdev\admindesk\api\DemandeRestController.class
+fr\lgdev\admindesk\domain\Priorite.class
+fr\lgdev\admindesk\api\apidoc\DemandeApiDoc.class
+fr\lgdev\admindesk\domain\TypeDemande.class
+fr\lgdev\admindesk\web\DemandeController.class
+fr\lgdev\admindesk\api\RestExceptionHandler.class
