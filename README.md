@@ -8,22 +8,6 @@ avec des fonctionnalités IA au fil des 3 jours de formation.
 
 ---
 
-## Branches
-
-| Branche | Contenu |
-|---|---|
-| `feat/j0-base` | CRUD pur — zéro IA |
-| `feat/j1-morning` | Premier appel LLM — bouton "Résumer" |
-| `feat/j1-afternoon` | Prompt structuré + protocole de vérification |
-| `feat/j2-morning` | Assistant rédaction complet (3 fonctions IA) |
-| `feat/j2-afternoon` | Garde-fous, quotas, masquage, tableau de bord coûts |
-| `feat/j3-morning` | Pipeline RAG, embeddings, pgvector |
-| `feat/j3-afternoon` | Tests, observabilité, déploiement |
-| `solution` | Code complet — tous les défis résolus |
-| `develop` | **Branche de travail participants** — mise à jour par le formateur au début de chaque demi-journée |
-
----
-
 ## Stack
 
 | Composant | Version |
@@ -54,7 +38,7 @@ git clone https://github.com/lgdev-code/admindesk.git
 cd admindesk
 git checkout develop
 
-./mvnw spring-boot:run
+mvn spring-boot:run
 ```
 
 L'application démarre sur [http://localhost:8080](http://localhost:8080).
@@ -70,7 +54,7 @@ Ne jamais committer de clés. Deux options :
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...
 export OPENAI_API_KEY=sk-...
-./mvnw spring-boot:run
+mvn spring-boot:run
 ```
 
 **Fichier local non versionné**
@@ -105,6 +89,6 @@ Puis lancer avec :
 ## Lancer les tests
 
 ```bash
-./mvnw test
+mvn test
 ```
 
