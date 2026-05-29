@@ -25,7 +25,7 @@ avec des fonctionnalités IA au fil des 3 jours de formation.
 ## Prérequis
 
 - **JDK 25** — inclus dans le toolkit
-- **Maven** — inclus via le wrapper `./mvnw`
+- **Maven** — inclus via le wrapper `mvn`
 - **IntelliJ IDEA** 2025.x recommandé
 - Clés API fournies par le formateur le jour J
 
@@ -69,7 +69,7 @@ spring.ai.openai.api-key=sk-...
 Puis lancer avec :
 
 ```bash
-./mvnw spring-boot:run -Dspring-boot.run.profiles=local
+mvn spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
 ---
