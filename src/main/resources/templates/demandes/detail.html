@@ -7,7 +7,6 @@
 
 <div class="container py-4">
 
-    <!-- ── Breadcrumb ────────────────────────────────────────── -->
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/demandes">Demandes</a></li>
@@ -15,35 +14,35 @@
         </ol>
     </nav>
 
-    <!-- ── En-tête ───────────────────────────────────────────── -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle me-2"></i><span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
+        <i class="bi bi-exclamation-triangle me-2"></i><span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
             <h1 class="h3 mb-1">
                 <span th:text="${demande.reference}" class="text-primary"></span>
             </h1>
             <div class="d-flex gap-2 flex-wrap">
-                <span class="badge"
-                      th:classappend="'bg-' + ${demande.statut.badgeCss}"
-                      th:text="${demande.statut.libelle}">
-                </span>
-                <span class="badge"
-                      th:classappend="'badge-' + ${#strings.toLowerCase(demande.priorite.name())}"
-                      th:text="${demande.priorite.libelle}">
-                </span>
-                <span class="badge bg-light text-dark border"
-                      th:text="${demande.type.libelle}">
-                </span>
+                <span class="badge" th:classappend="'bg-' + ${demande.statut.badgeCss}"
+                      th:text="${demande.statut.libelle}"></span>
+                <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(demande.priorite.name())}"
+                      th:text="${demande.priorite.libelle}"></span>
+                <span class="badge bg-light text-dark border" th:text="${demande.type.libelle}"></span>
             </div>
         </div>
-        <div class="d-flex gap-2">
-            <a th:href="@{/demandes/{id}/modifier(id=${demande.id})}"
-               class="btn btn-outline-secondary">
+        <div class="d-flex gap-2 flex-wrap justify-content-end">
+            <a th:href="@{/demandes/{id}/modifier(id=${demande.id})}" class="btn btn-outline-secondary btn-sm">
                 <i class="bi bi-pencil me-1"></i>Modifier
             </a>
-            <form th:action="@{/demandes/{id}/supprimer(id=${demande.id})}"
-                  method="post"
+            <form th:action="@{/demandes/{id}/supprimer(id=${demande.id})}" method="post" class="d-inline"
                   onsubmit="return confirm('Confirmer la suppression ?')">
-                <button type="submit" class="btn btn-outline-danger">
+                <button type="submit" class="btn btn-outline-danger btn-sm">
                     <i class="bi bi-trash me-1"></i>Supprimer
                 </button>
             </form>
@@ -65,19 +64,6 @@
                 </div>
             </div>
 
-            <!-- IA Block (hidden en J0, visible à partir de J1) -->
-            <!--
-            <div class="ia-block" th:if="${demande.resumeIa != null}">
-                <h6 class="mb-2"><i class="bi bi-cpu me-2 text-primary"></i>Analyse IA</h6>
-                <p class="mb-1"><strong>Résumé :</strong>
-                    <span th:text="${demande.resumeIa}"></span></p>
-                <p class="mb-1"><strong>Catégorie IA :</strong>
-                    <span th:text="${demande.categorieIa}"></span></p>
-                <p class="mb-0"><strong>Informations manquantes :</strong>
-                    <span th:text="${demande.informationsManquantesIa}"></span></p>
-            </div>
-            -->
-
             <!-- Commentaire agent -->
             <div class="card shadow-sm" th:if="${demande.commentaireAgent != null}">
                 <div class="card-header fw-semibold">
@@ -95,9 +81,7 @@
 
             <!-- Informations demandeur -->
             <div class="card shadow-sm mb-4">
-                <div class="card-header fw-semibold">
-                    <i class="bi bi-person me-2"></i>Demandeur
-                </div>
+                <div class="card-header fw-semibold"><i class="bi bi-person me-2"></i>Demandeur</div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <i class="bi bi-person-fill text-muted me-2"></i>
@@ -105,9 +89,7 @@
                     </li>
                     <li class="list-group-item">
                         <i class="bi bi-envelope text-muted me-2"></i>
-                        <a th:href="'mailto:' + ${demande.emailDemandeur}"
-                           th:text="${demande.emailDemandeur}">
-                        </a>
+                        <a th:href="'mailto:' + ${demande.emailDemandeur}" th:text="${demande.emailDemandeur}"></a>
                     </li>
                     <li class="list-group-item" th:if="${demande.telephoneDemandeur != null}">
                         <i class="bi bi-telephone text-muted me-2"></i>
@@ -118,21 +100,17 @@
 
             <!-- Suivi -->
             <div class="card shadow-sm">
-                <div class="card-header fw-semibold">
-                    <i class="bi bi-clock-history me-2"></i>Suivi
-                </div>
+                <div class="card-header fw-semibold"><i class="bi bi-clock-history me-2"></i>Suivi</div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item d-flex justify-content-between">
                         <span class="text-muted small">Créée le</span>
                         <span class="small fw-semibold"
-                              th:text="${#temporals.format(demande.dateCreation, 'dd/MM/yyyy HH:mm')}">
-                        </span>
+                              th:text="${#temporals.format(demande.dateCreation, 'dd/MM/yyyy HH:mm')}"></span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span class="text-muted small">Mise à jour</span>
                         <span class="small fw-semibold"
-                              th:text="${#temporals.format(demande.dateMiseAJour, 'dd/MM/yyyy HH:mm')}">
-                        </span>
+                              th:text="${#temporals.format(demande.dateMiseAJour, 'dd/MM/yyyy HH:mm')}"></span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between"
                         th:if="${demande.agentTraitant != null}">

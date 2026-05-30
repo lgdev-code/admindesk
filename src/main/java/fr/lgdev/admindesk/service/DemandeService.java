@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class DemandeService {
 
     private final DemandeRepository repo;
-    private final AtomicLong seq = new AtomicLong(100);
+    private final AtomicLong        seq = new AtomicLong(100);
 
     public Page<Demande> search(StatutDemande statut, TypeDemande type,
                                 Priorite priorite, String search, int page) {

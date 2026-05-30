@@ -28,11 +28,6 @@ public class DemandeResponseDTO {
     private LocalDateTime dateCreation;
     private LocalDateTime dateMiseAJour;
 
-    // AI fields — null in feat/j0-base, populated from feat/j1-morning
-    private String resumeIa;
-    private String categorieIa;
-    private String informationsManquantesIa;
-
     public static DemandeResponseDTO from(Demande d) {
         var dto = new DemandeResponseDTO();
         dto.setId(d.getId());

@@ -16,7 +16,7 @@
         </a>
     </div>
 
-    <!-- Total -->
+    <!-- Total demandes -->
     <div class="row g-4 mb-4">
         <div class="col-12">
             <div class="card shadow-sm text-white bg-primary">
@@ -47,7 +47,7 @@
         </div>
     </div>
 
-    <div class="row g-4">
+    <div class="row g-4 mb-4">
 
         <!-- Stats par type -->
         <div class="col-md-6">
@@ -61,8 +61,7 @@
                         <tr th:each="entry : ${statsType}">
                             <td th:text="${entry.key}"></td>
                             <td class="text-end">
-                                <span class="badge bg-primary rounded-pill"
-                                      th:text="${entry.value}"></span>
+                                <span class="badge bg-primary rounded-pill" th:text="${entry.value}"></span>
                             </td>
                             <td style="width:40%">
                                 <div class="progress" style="height:6px;">
