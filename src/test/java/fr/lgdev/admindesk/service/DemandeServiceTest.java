@@ -6,6 +6,7 @@ import fr.lgdev.admindesk.domain.StatutDemande;
 import fr.lgdev.admindesk.domain.TypeDemande;
 import fr.lgdev.admindesk.dto.DemandeFormDTO;
 import fr.lgdev.admindesk.repository.DemandeRepository;
+import fr.lgdev.admindesk.service.ai.AIService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,9 @@ class DemandeServiceTest {
 
     @Mock
     private DemandeRepository repo;
+
+    @Mock
+    private AIService aiService;
 
     @InjectMocks
     private DemandeService service;

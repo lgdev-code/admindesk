@@ -1,83 +1,36 @@
 # AdminDesk — Projet fil rouge
 
 > **Formation IFAP – IA dans les Développements**
-> Spring Boot · Spring AI · Anthropic
 
-Application de gestion de demandes administratives, enrichie progressivement
-avec des fonctionnalités IA au fil des **5 demi-journées** de formation.
-
-> **Branche actuelle : `feat/d1-base`** — point de départ de la D1.
-> **CRUD pur, ZÉRO IA.** Aucune dépendance Spring AI, aucun bean, aucun champ IA.
-> Tout l'aspect IA (infrastructure ET code applicatif) sera construit par vous au fil des TPs.
+> **Branche actuelle : `feat/d1-tp2-prompt`**
+> État du code après le **TP2 de la D1** : le prompt de `AIService.summarize()` est désormais
+> structuré (R/C/T/F/Co, system/user séparés, format 3 lignes, refus explicite) et la temperature
+> est à 0 (reproductibilité). Sert aussi de **base de départ pour le TP3**.
 
 ---
 
-## Ce qui est en place
+## Ce qui a changé depuis `feat/d1-tp1-naive`
 
-Application métier complète, sans aucune trace d'intelligence artificielle :
-
-- Gestion des demandes : liste, détail, création, édition, suppression
-- API REST JSON + interface web Thymeleaf
-- Tableau de bord avec statistiques métier (par statut, type, priorité)
-- Base H2 in-memory peuplée via `data.sql`
-- Documentation API via Swagger UI
-
-**Il n'y a aucune dépendance Spring AI dans le `pom.xml`, aucun bean `ChatClient`,
-aucun champ `resumeIa`.** Vous allez tout ajouter au TP1.
-
----
-
-## Stack
-
-| Composant | Version |
+| Fichier | Changement |
 |---|---|
-| Java | 25 |
-| Spring Boot | 3.5.12 |
-| Base de données | H2 in-memory |
-| Templates | Thymeleaf + Bootstrap 5 |
-| Doc API | springdoc-openapi (Swagger UI) |
+| `service/ai/AIService.java` | Prompt réécrit : system + user séparés, R/C/T/F/Co, format strict 3 lignes, refus explicite |
+| `application.properties` | `temperature` passée de `0.7` à `0.0` |
 
-> Spring AI (1.1.0) et le modèle Claude Haiku 4.5 seront ajoutés au TP1.
+Aucun autre fichier modifié — l'architecture (service, controllers, template) est inchangée depuis le TP1.
 
 ---
 
-## Démarrage rapide
+## Démarrage
 
 ```bash
-git checkout feat/d1-base
-mvn spring-boot:run
+export ANTHROPIC_API_KEY=sk-ant-...
+git checkout feat/d1-tp2-prompt
+./mvnw spring-boot:run
 ```
 
-L'application démarre sur http://localhost:8080.
-Pas besoin de clé API à ce stade — il n'y a pas encore d'appel LLM.
-
----
-
-## URLs utiles
-
-### Interface web (Thymeleaf)
-| URL | Description |
-|---|---|
-| http://localhost:8080/demandes | Liste des demandes |
-| http://localhost:8080/demandes/dashboard | Tableau de bord |
-| http://localhost:8080/demandes/nouveau | Créer une demande |
-
-### API REST JSON
-| URL | Description |
-|---|---|
-| `GET /api/v1/demandes` | Liste paginée |
-| `POST /api/v1/demandes` | Créer |
-| `GET /api/v1/demandes/{id}` | Détail |
-| `PUT /api/v1/demandes/{id}` | Modifier |
-| `DELETE /api/v1/demandes/{id}` | Supprimer |
-| `GET /api/v1/demandes/stats` | Statistiques métier |
-
-### Outils
-| URL | Description |
-|---|---|
-| http://localhost:8080/swagger-ui.html | Swagger UI |
-| http://localhost:8080/h2-console | Console H2 (`jdbc:h2:mem:admindesk`) |
-| http://localhost:8080/actuator/health | Health check |
+Testez le contraste avec le TP1 :
+- `POST /api/v1/demandes/1/summarize` → 3 lignes Objet/Urgence/Action, stables sur 5 appels
+- `POST /api/v1/demandes/12/summarize` → refus explicite (demande hors périmètre)
 
 ---
 
@@ -85,11 +38,8 @@ Pas besoin de clé API à ce stade — il n'y a pas encore d'appel LLM.
 
 | TP | Sujet | Base départ | Branche solution |
 |---|---|---|---|
-| **TP1** | Brancher Spring AI + premier appel LLM (prompt naïf) | **`feat/d1-base` ← vous êtes ici** | `feat/d1-tp1-naive` |
-| **TP2** | Améliorer le prompt avec R/C/T/F/Co + séparation system/user | `feat/d1-tp1-naive` | `feat/d1-tp2-prompt` |
-| **TP3** | Industrialiser : `call()` privée, logs, `AIServiceException`, ProblemDetail | `feat/d1-tp2-prompt` | `feat/d1-tp3-final` |
+| TP1 | Premier appel LLM — prompt naïf | `feat/d1-base` | `feat/d1-tp1-naive` |
+| **TP2** | Prompt structuré R/C/T/F/Co + temperature 0 | `feat/d1-tp1-naive` | **`feat/d1-tp2-prompt` ← vous êtes ici** |
+| TP3 | Industrialiser : `call()` privée, logs, `AIServiceException`, ProblemDetail | `feat/d1-tp2-prompt` | `feat/d1-tp3-final` |
 
-Au **TP1**, vous ajouterez d'abord l'infrastructure Spring AI (dépendance Maven, bean `ChatClient`,
-configuration Anthropic, champ `resumeIa`), puis le code applicatif (service, endpoint, action web, template).
-
-**Principe :** la branche solution du TP en cours = base de départ du TP suivant. Branches **cumulatives**.
+**Principe :** branche solution du TP en cours = base de départ du TP suivant. Branches cumulatives.

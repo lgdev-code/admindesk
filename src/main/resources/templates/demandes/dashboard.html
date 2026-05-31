@@ -89,8 +89,7 @@
                         <tr th:each="entry : ${statsPriorite}">
                             <td th:text="${entry.key}"></td>
                             <td class="text-end">
-                                <span class="badge bg-secondary rounded-pill"
-                                      th:text="${entry.value}"></span>
+                                <span class="badge bg-secondary rounded-pill" th:text="${entry.value}"></span>
                             </td>
                             <td style="width:40%">
                                 <div class="progress" style="height:6px;">
@@ -108,15 +107,13 @@
 
     </div>
 
-    <!-- Lien API REST -->
-    <div class="alert alert-light border mt-4 d-flex align-items-center gap-3">
+    <!-- Liens dev -->
+    <div class="alert alert-light border d-flex align-items-center gap-3">
         <i class="bi bi-braces fs-4 text-primary"></i>
         <div>
             <strong>API REST disponible</strong> —
-            <a href="/api/v1/demandes" target="_blank">/api/v1/demandes</a>
-            ·
-            <a href="/api/v1/demandes/stats" target="_blank">/api/v1/demandes/stats</a>
-            ·
+            <a href="/api/v1/demandes" target="_blank">/api/v1/demandes</a> ·
+            <a href="/swagger-ui.html" target="_blank">Swagger UI</a> ·
             <a href="/h2-console" target="_blank">H2 Console</a>
         </div>
     </div>

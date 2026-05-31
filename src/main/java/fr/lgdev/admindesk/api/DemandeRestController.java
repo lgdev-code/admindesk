@@ -35,10 +35,10 @@ public class DemandeRestController implements DemandeApiDoc {
     @GetMapping
     public ResponseEntity<Page<DemandeResponseDTO>> list(
             @RequestParam(required = false) StatutDemande statut,
-            @RequestParam(required = false) TypeDemande type,
-            @RequestParam(required = false) Priorite priorite,
-            @RequestParam(required = false) String search,
-            @RequestParam(defaultValue = "0") int page) {
+            @RequestParam(required = false) TypeDemande   type,
+            @RequestParam(required = false) Priorite      priorite,
+            @RequestParam(required = false) String        search,
+            @RequestParam(defaultValue = "0") int         page) {
 
         return ResponseEntity.ok(service.search(statut, type, priorite, search, page)
                 .map(DemandeResponseDTO::from));
@@ -72,7 +72,7 @@ public class DemandeRestController implements DemandeApiDoc {
     @PutMapping("/{id}")
     public ResponseEntity<DemandeResponseDTO> update(
             @PathVariable Long id,
-            @Valid @RequestBody DemandeFormDTO dto) {
+                                                     @Valid @RequestBody DemandeFormDTO dto) {
         return ResponseEntity.ok(DemandeResponseDTO.from(service.update(id, dto)));
     }
 
@@ -87,10 +87,16 @@ public class DemandeRestController implements DemandeApiDoc {
     @GetMapping("/stats")
     public ResponseEntity<Map<String, Object>> stats() {
         return ResponseEntity.ok(Map.of(
-                "total", service.count(),
-                "byStatus", service.statsByStatus(),
-                "byType", service.statsByType(),
+                "total",      service.count(),
+                "byStatus",   service.statsByStatus(),
+                "byType",     service.statsByType(),
                 "byPriority", service.statsByPriority()
         ));
+    }
+
+    @Override
+    @PostMapping("/{id}/summarize")
+    public ResponseEntity<DemandeResponseDTO> summarize(@PathVariable Long id) {
+        return ResponseEntity.ok(DemandeResponseDTO.from(service.summarize(id)));
     }
 }

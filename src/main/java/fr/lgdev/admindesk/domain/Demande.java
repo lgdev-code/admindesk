@@ -67,6 +67,9 @@ public class Demande {
     @Column(columnDefinition = "TEXT")
     private String commentaireAgent;
 
+    @Column(columnDefinition = "TEXT")
+    private String resumeIa;
+
     @CreationTimestamp
     @Column(name = "date_creation", updatable = false)
     private LocalDateTime dateCreation;

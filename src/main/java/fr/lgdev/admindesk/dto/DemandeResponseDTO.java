@@ -25,6 +25,7 @@ public class DemandeResponseDTO {
     private String        prioriteLibelle;
     private String        agentTraitant;
     private String        commentaireAgent;
+    private String        resumeIa;
     private LocalDateTime dateCreation;
     private LocalDateTime dateMiseAJour;
 
@@ -44,6 +45,7 @@ public class DemandeResponseDTO {
         dto.setPrioriteLibelle(d.getPriorite().getLibelle());
         dto.setAgentTraitant(d.getAgentTraitant());
         dto.setCommentaireAgent(d.getCommentaireAgent());
+        dto.setResumeIa(d.getResumeIa());
         dto.setDateCreation(d.getDateCreation());
         dto.setDateMiseAJour(d.getDateMiseAJour());
         return dto;

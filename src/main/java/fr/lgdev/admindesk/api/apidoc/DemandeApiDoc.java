@@ -103,4 +103,17 @@ public interface DemandeApiDoc {
             }
     )
     ResponseEntity<Map<String, Object>> stats();
+
+    @Operation(
+            summary = "Résumer une demande via IA (TP1 D1 — prompt naïf)",
+            description = "Premier appel LLM minimal — aucun cadrage du prompt. "
+                        + "Résultat volontairement insatisfaisant pour motiver le TP2.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Résumé généré"),
+                    @ApiResponse(responseCode = "404", description = "Demande non trouvée", content = @Content(schema = @Schema()))
+            }
+    )
+    ResponseEntity<DemandeResponseDTO> summarize(
+            @Parameter(description = "ID de la demande", required = true) @PathVariable Long id
+    );
 }

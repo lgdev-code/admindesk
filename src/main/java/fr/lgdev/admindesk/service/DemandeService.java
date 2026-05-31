@@ -6,6 +6,7 @@ import fr.lgdev.admindesk.domain.StatutDemande;
 import fr.lgdev.admindesk.domain.TypeDemande;
 import fr.lgdev.admindesk.dto.DemandeFormDTO;
 import fr.lgdev.admindesk.repository.DemandeRepository;
+import fr.lgdev.admindesk.service.ai.AIService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class DemandeService {
 
     private final DemandeRepository repo;
+    private final AIService         aiService;
     private final AtomicLong        seq = new AtomicLong(100);
 
     public Page<Demande> search(StatutDemande statut, TypeDemande type,
@@ -71,6 +73,14 @@ public class DemandeService {
         var d = findById(id);
         log.warn("Deleting request: {}", d.getReference());
         repo.delete(d);
+    }
+
+    @Transactional
+    public Demande summarize(Long id) {
+        Demande demande = findById(id);
+        String resume = aiService.summarize(demande);
+        demande.setResumeIa(resume);
+        return repo.save(demande);
     }
 
     public Map<String, Long> statsByStatus() {

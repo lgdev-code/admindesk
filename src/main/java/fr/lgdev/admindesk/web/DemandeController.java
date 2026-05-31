@@ -67,9 +67,7 @@ public class DemandeController {
 
     @PostMapping("/nouveau")
     public String create(@Valid @ModelAttribute("dto") DemandeFormDTO dto,
-                         BindingResult br,
-                         Model model,
-                         RedirectAttributes flash) {
+                         BindingResult br, Model model, RedirectAttributes flash) {
         if (br.hasErrors()) {
             model.addAttribute("types",       TypeDemande.values());
             model.addAttribute("statuts",     StatutDemande.values());
@@ -95,7 +93,6 @@ public class DemandeController {
         dto.setPriorite(d.getPriorite());
         dto.setAgentTraitant(d.getAgentTraitant());
         dto.setCommentaireAgent(d.getCommentaireAgent());
-
         model.addAttribute("dto",         dto);
         model.addAttribute("demande",     d);
         model.addAttribute("types",       TypeDemande.values());
@@ -108,9 +105,7 @@ public class DemandeController {
     @PostMapping("/{id}/modifier")
     public String update(@PathVariable Long id,
                          @Valid @ModelAttribute("dto") DemandeFormDTO dto,
-                         BindingResult br,
-                         Model model,
-                         RedirectAttributes flash) {
+                         BindingResult br, Model model, RedirectAttributes flash) {
         if (br.hasErrors()) {
             model.addAttribute("demande",     service.findById(id));
             model.addAttribute("types",       TypeDemande.values());
@@ -129,5 +124,11 @@ public class DemandeController {
         service.delete(id);
         flash.addFlashAttribute("success", "Demande supprimée.");
         return "redirect:/demandes";
+    }
+
+    @PostMapping("/{id}/resumer")
+    public String resumer(@PathVariable Long id) {
+        service.summarize(id);
+        return "redirect:/demandes/" + id;
     }
 }
