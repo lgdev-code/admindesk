@@ -97,7 +97,7 @@ public class DemandeRestController implements DemandeApiDoc {
     @Override
     @PostMapping("/{id}/summarize")
     public ResponseEntity<DemandeResponseDTO> summarize(@PathVariable Long id) {
-        return ResponseEntity.ok(DemandeResponseDTO.from(service.summarize(id)));
+        return ResponseEntity.ok(DemandeResponseDTO.from(service.summarize(id, 1L)));
     }
 
     @Override

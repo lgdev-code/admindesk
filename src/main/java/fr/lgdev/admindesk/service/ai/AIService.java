@@ -13,9 +13,10 @@ import java.util.stream.Collectors;
 /**
  * AdminDesk — Service IA.
  *
- * État TP5 (D2) — masquage RGPD : InputSanitizer appliqué au user dans call(),
- * avant tout envoi au LLM. Aucune donnée personnelle à structure fixe (NIR, tél,
- * IBAN) ne sort vers Anthropic.
+ * État TP6 (D2) — forme finale de call() : quota -> masquage RGPD -> appel LLM -> comptage.
+ *  - QuotaService.check() avant l'appel (peut lever 429) ;
+ *  - InputSanitizer.sanitize() masque le user ;
+ *  - QuotaService.recordUsage() APRÈS succès uniquement (jamais sur échec).
  */
 @Service
 @RequiredArgsConstructor
@@ -24,8 +25,9 @@ public class AIService {
 
     private final ChatClient chatClient;
     private final InputSanitizer sanitizer;
+    private final QuotaService quotas;
 
-    public String summarize(Demande demande) {
+    public String summarize(Demande demande, Long agentId) {
 
         String system = """
                 Tu es un agent administratif expert.
@@ -53,7 +55,7 @@ public class AIService {
                 %s
                 """.formatted(demande.getDescription());
 
-        return call(system, user, null);
+        return call(system, user, agentId);
     }
 
     public String reformulate(Demande demande, Long agentId) {
@@ -127,6 +129,7 @@ public class AIService {
      * RGPD : on ne logue JAMAIS le contenu des prompts, seulement la latence et l'agent.
      */
     private String call(String system, String user, Long agentId) {
+        quotas.check(agentId);                          // garde-fou quota (peut lever 429)
         long t0 = System.nanoTime();
         String safeUser = sanitizer.sanitize(user);   // masquage RGPD avant envoi
         try {
@@ -137,11 +140,17 @@ public class AIService {
                     .content();
             log.info("LLM call OK in {} ms — agent={}",
                     (System.nanoTime() - t0) / 1_000_000, agentId);
+            quotas.recordUsage(agentId, estimateTokens(content));  // APRÈS succès uniquement
             return content;
         } catch (Exception e) {
             log.error("LLM call failed after {} ms — agent={}",
                     (System.nanoTime() - t0) / 1_000_000, agentId, e);
             throw new AIServiceException("Échec appel IA", e);
         }
+    }
+
+    /** Estimation grossière suffisante pour le décompte du quota (~1 token pour 4 caractères). */
+    private int estimateTokens(String text) {
+        return text == null ? 0 : text.length() / 4;
     }
 }

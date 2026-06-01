@@ -76,9 +76,9 @@ public class DemandeService {
     }
 
     @Transactional
-    public Demande summarize(Long id) {
+    public Demande summarize(Long id, Long agentId) {
         Demande demande = findById(id);
-        demande.setResumeIa(aiService.summarize(demande));
+        demande.setResumeIa(aiService.summarize(demande, agentId));
         return repo.save(demande);
     }
 

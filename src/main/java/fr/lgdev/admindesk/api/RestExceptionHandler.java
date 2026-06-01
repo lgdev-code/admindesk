@@ -1,6 +1,7 @@
 package fr.lgdev.admindesk.api;
 
 import fr.lgdev.admindesk.service.ai.AIServiceException;
+import fr.lgdev.admindesk.service.ai.QuotaExceededException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,16 @@ public class RestExceptionHandler {
         problem.setProperty("violations", ex.getBindingResult().getFieldErrors().stream()
                 .map(e -> e.getField() + " : " + e.getDefaultMessage())
                 .toList());
+        return problem;
+    }
+
+    @ExceptionHandler(QuotaExceededException.class)
+    public ProblemDetail quotaExceeded(QuotaExceededException ex) {
+        log.warn("Quota exceeded: {}", ex.getMessage());
+        var problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.TOO_MANY_REQUESTS, ex.getMessage());
+        problem.setType(URI.create("https://admindesk.lgdev.fr/errors/quota-exceeded"));
+        problem.setTitle("Quota IA dépassé");
         return problem;
     }
 

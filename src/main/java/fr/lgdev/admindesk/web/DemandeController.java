@@ -18,6 +18,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 public class DemandeController {
 
+    /**
+     * Identifiant de l'agent à l'origine des actions IA.
+     * Bouchon volontaire : l'application n'a pas encore d'authentification, donc aucun
+     * agent connecté n'est disponible dans la session/le SecurityContext. On trace donc
+     * toutes les actions sous un agent système unique. À remplacer par l'agent réellement
+     * authentifié (ex. récupéré du SecurityContext) le jour où l'authentification est ajoutée.
+     */
+    private static final Long AGENT_ID_PAR_DEFAUT = 1L;
+
     private final DemandeService service;
 
     @GetMapping
@@ -127,25 +136,25 @@ public class DemandeController {
 
     @PostMapping("/{id}/resumer")
     public String resumer(@PathVariable Long id) {
-        service.summarize(id);
+        service.summarize(id, AGENT_ID_PAR_DEFAUT);
         return "redirect:/demandes/" + id;
     }
 
     @PostMapping("/{id}/reformuler")
     public String reformuler(@PathVariable Long id) {
-        service.reformulate(id, 1L);
+        service.reformulate(id, AGENT_ID_PAR_DEFAUT);
         return "redirect:/demandes/" + id;
     }
 
     @PostMapping("/{id}/detecter-manques")
     public String detecterManques(@PathVariable Long id) {
-        service.detectMissingInfo(id, 1L);
+        service.detectMissingInfo(id, AGENT_ID_PAR_DEFAUT);
         return "redirect:/demandes/" + id;
     }
 
     @PostMapping("/{id}/categoriser")
     public String categoriser(@PathVariable Long id) {
-        service.categorize(id, 1L);
+        service.categorize(id, AGENT_ID_PAR_DEFAUT);
         return "redirect:/demandes/" + id;
     }
 }
