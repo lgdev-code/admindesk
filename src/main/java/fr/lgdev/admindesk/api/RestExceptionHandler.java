@@ -1,5 +1,6 @@
 package fr.lgdev.admindesk.api;
 
+import fr.lgdev.admindesk.service.ai.AIServiceException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,17 @@ public class RestExceptionHandler {
         problem.setProperty("violations", ex.getBindingResult().getFieldErrors().stream()
                 .map(e -> e.getField() + " : " + e.getDefaultMessage())
                 .toList());
+        return problem;
+    }
+
+    @ExceptionHandler(AIServiceException.class)
+    public ProblemDetail aiServiceError(AIServiceException ex) {
+        log.error("AI service error: {}", ex.getMessage());
+        var problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_GATEWAY,
+                "Le service d'IA est temporairement indisponible. Réessayez dans un instant.");
+        problem.setType(URI.create("https://admindesk.lgdev.fr/errors/ai-service"));
+        problem.setTitle("Erreur du service IA");
         return problem;
     }
 

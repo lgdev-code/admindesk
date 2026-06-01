@@ -2,20 +2,22 @@ package fr.lgdev.admindesk.service.ai;
 
 import fr.lgdev.admindesk.domain.Demande;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
 /**
  * AdminDesk — Service IA.
  *
- * État TP2 (D1) — prompt STRUCTURÉ : R/C/T/F/Co, séparation system/user,
- * format strict 3 lignes (Objet / Urgence / Action), refus explicite,
- * temperature 0 (cf. application.properties) pour la reproductibilité.
- *
- * Sera industrialisé au TP3 (call() privée, logs latence, AIServiceException).
+ * État TP3 (D1) — industrialisé :
+ *  - méthode call() privée (DRY) : chrono + log + try/catch, réutilisable par les
+ *    futures fonctions IA de la D2 (reformulate, detectMissingInfo, categorize) ;
+ *  - observabilité : latence loggée, JAMAIS le contenu du prompt (RGPD) ;
+ *  - robustesse : AIServiceException -> ProblemDetail 502 via RestExceptionHandler.
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AIService {
 
     private final ChatClient chatClient;
@@ -48,10 +50,27 @@ public class AIService {
                 %s
                 """.formatted(demande.getDescription());
 
-        return chatClient.prompt()
-                .system(system)
-                .user(user)
-                .call()
-                .content();
+        return call(system, user);
+    }
+
+    /**
+     * Point d'appel unique vers le LLM. Centralise chrono, log et gestion d'erreur.
+     * RGPD : on ne logue JAMAIS le contenu des prompts, seulement la latence.
+     */
+    private String call(String system, String user) {
+        long t0 = System.nanoTime();
+        try {
+            String content = chatClient.prompt()
+                    .system(system)
+                    .user(user)
+                    .call()
+                    .content();
+            log.info("LLM call OK in {} ms", (System.nanoTime() - t0) / 1_000_000);
+            return content;
+        } catch (Exception e) {
+            log.error("LLM call failed after {} ms",
+                    (System.nanoTime() - t0) / 1_000_000, e);
+            throw new AIServiceException("Échec appel IA", e);
+        }
     }
 }
