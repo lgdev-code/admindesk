@@ -10,8 +10,7 @@ VALUES
 
 -- 1
 ('DEM-2025-00001', 'Martin Dupont', 'martin.dupont@email.fr', '06 12 34 56 78',
- 'URBANISME',
- 'Je souhaite obtenir un permis de construire pour l''extension de ma maison individuelle située au 14 rue des Lilas, 75014 Paris. Il s''agit d''une extension de 25 m² sur le côté ouest du bâtiment. Les travaux comprendraient la création d''une véranda fermée avec toit vitré. Je joins les plans architecturaux ainsi que le formulaire Cerfa 13406. Les travaux sont prévus pour débuter en mars 2026.',
+ 'URBANISME', 'Par la présente, je demande l''obtention d''un permis de construire de mon bien situé 14 rue des Lilas, 75014 Paris pour les travaux suivants : Extension d''une maison individuelle d''une superficie de 25 m² sur la façade ouest, consistant en la création d''une véranda fermée avec toit vitré. Je joins les plans architecturaux ainsi que le formulaire Cerfa 13406. Les travaux sont prévus pour débuter en mars 2026.',
  'EN_COURS', 'HAUTE', 'Sophie Laurent',
  'Dossier complet, en attente de validation PLU.',
  CURRENT_TIMESTAMP - INTERVAL '15' DAY, CURRENT_TIMESTAMP - INTERVAL '2' DAY),
@@ -40,9 +39,9 @@ VALUES
  CURRENT_TIMESTAMP - INTERVAL '10' DAY, CURRENT_TIMESTAMP - INTERVAL '8' DAY),
 
 -- 5
-('DEM-2025-00005', 'Hassan Kader', 'hassan.kader@laposte.net', '07 60 50 40 30',
+('DEM-2025-00005', 'Louis Kadier', 'louis.kadier@laposte.net', '07 60 50 40 30',
  'VOIRIE',
- 'Un nid de poule important s''est formé devant le 23 rue du Commerce et représente un danger pour les automobilistes et les cyclistes. Il fait environ 40 cm de diamètre et 15 cm de profondeur. J''ai déjà observé deux accidents mineurs ce mois-ci à cause de ce défaut de chaussée. Je signale également une plaque d''égout qui s''est déplacée à 5 mètres de là. L''intervention me semble urgente avant que la situation ne s''aggrave avec les pluies hivernales.',
+ 'Bonjour, j''en ai vraiment marre !! Y''a un trou énorme dans la route devant chez moi rue du Commerce, ça fait des semaines et personne fait rien. L''autre jour une bagnole a failli se planter dedans, c''est super dangereux surtout le soir quand on voit rien. Faut faire quelque chose avant qu''il y ait un accident grave, c''est pas normal de payer des impôts pour des routes pareilles. Merci de vous en occuper vite.',
  'EN_COURS', 'HAUTE', 'Robert Garnier', null,
  CURRENT_TIMESTAMP - INTERVAL '5' DAY, CURRENT_TIMESTAMP - INTERVAL '1' DAY),
 

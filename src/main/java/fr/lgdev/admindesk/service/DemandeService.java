@@ -78,8 +78,14 @@ public class DemandeService {
     @Transactional
     public Demande summarize(Long id) {
         Demande demande = findById(id);
-        String resume = aiService.summarize(demande);
-        demande.setResumeIa(resume);
+        demande.setResumeIa(aiService.summarize(demande));
+        return repo.save(demande);
+    }
+
+    @Transactional
+    public Demande reformulate(Long id, Long agentId) {
+        Demande demande = findById(id);
+        demande.setReformulationIa(aiService.reformulate(demande, agentId));
         return repo.save(demande);
     }
 

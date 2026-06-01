@@ -26,6 +26,7 @@ public class DemandeResponseDTO {
     private String        agentTraitant;
     private String        commentaireAgent;
     private String        resumeIa;
+    private String        reformulationIa;
     private LocalDateTime dateCreation;
     private LocalDateTime dateMiseAJour;
 
@@ -46,6 +47,7 @@ public class DemandeResponseDTO {
         dto.setAgentTraitant(d.getAgentTraitant());
         dto.setCommentaireAgent(d.getCommentaireAgent());
         dto.setResumeIa(d.getResumeIa());
+        dto.setReformulationIa(d.getReformulationIa());
         dto.setDateCreation(d.getDateCreation());
         dto.setDateMiseAJour(d.getDateMiseAJour());
         return dto;

@@ -9,11 +9,9 @@ import org.springframework.stereotype.Service;
 /**
  * AdminDesk — Service IA.
  *
- * État TP3 (D1) — industrialisé :
- *  - méthode call() privée (DRY) : chrono + log + try/catch, réutilisable par les
- *    futures fonctions IA de la D2 (reformulate, detectMissingInfo, categorize) ;
- *  - observabilité : latence loggée, JAMAIS le contenu du prompt (RGPD) ;
- *  - robustesse : AIServiceException -> ProblemDetail 502 via RestExceptionHandler.
+ * État TP4 (D2) — deuxième fonction IA : reformulate().
+ *  - call() évolue : accepte désormais un agentId (préparation du QuotaService du TP6) ;
+ *  - reformulate() réutilise call() : aucune duplication de la mécanique (chrono, log, try/catch).
  */
 @Service
 @RequiredArgsConstructor
@@ -50,14 +48,33 @@ public class AIService {
                 %s
                 """.formatted(demande.getDescription());
 
-        return call(system, user);
+        return call(system, user, null);
+    }
+
+    public String reformulate(Demande demande, Long agentId) {
+
+        String system = """
+                Tu es un agent administratif.
+                Reformule en français administratif neutre.
+                Garde le sens, change le ton.
+                N'invente rien, n'ajoute rien.
+                Si la demande est déjà formelle, retourne-la quasi à l'identique.
+                """;
+
+        String user = """
+                Reformule la demande suivante :
+
+                %s
+                """.formatted(demande.getDescription());
+
+        return call(system, user, agentId);
     }
 
     /**
      * Point d'appel unique vers le LLM. Centralise chrono, log et gestion d'erreur.
-     * RGPD : on ne logue JAMAIS le contenu des prompts, seulement la latence.
+     * RGPD : on ne logue JAMAIS le contenu des prompts, seulement la latence et l'agent.
      */
-    private String call(String system, String user) {
+    private String call(String system, String user, Long agentId) {
         long t0 = System.nanoTime();
         try {
             String content = chatClient.prompt()
@@ -65,11 +82,12 @@ public class AIService {
                     .user(user)
                     .call()
                     .content();
-            log.info("LLM call OK in {} ms", (System.nanoTime() - t0) / 1_000_000);
+            log.info("LLM call OK in {} ms — agent={}",
+                    (System.nanoTime() - t0) / 1_000_000, agentId);
             return content;
         } catch (Exception e) {
-            log.error("LLM call failed after {} ms",
-                    (System.nanoTime() - t0) / 1_000_000, e);
+            log.error("LLM call failed after {} ms — agent={}",
+                    (System.nanoTime() - t0) / 1_000_000, agentId, e);
             throw new AIServiceException("Échec appel IA", e);
         }
     }

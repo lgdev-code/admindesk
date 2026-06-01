@@ -105,15 +105,29 @@ public interface DemandeApiDoc {
     ResponseEntity<Map<String, Object>> stats();
 
     @Operation(
-            summary = "Résumer une demande via IA (TP1 D1 — prompt naïf)",
-            description = "Premier appel LLM minimal — aucun cadrage du prompt. "
-                        + "Résultat volontairement insatisfaisant pour motiver le TP2.",
+            summary = "Résumer une demande via IA",
+            description = "Génère un résumé structuré (Objet / Urgence / Action) et le persiste dans resumeIa.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Résumé généré"),
-                    @ApiResponse(responseCode = "404", description = "Demande non trouvée", content = @Content(schema = @Schema()))
+                    @ApiResponse(responseCode = "404", description = "Demande non trouvée", content = @Content(schema = @Schema())),
+                    @ApiResponse(responseCode = "502", description = "Service IA indisponible", content = @Content(schema = @Schema()))
             }
     )
     ResponseEntity<DemandeResponseDTO> summarize(
+            @Parameter(description = "ID de la demande", required = true) @PathVariable Long id
+    );
+
+    @Operation(
+            summary = "Reformuler une demande via IA",
+            description = "Reformule la description en français administratif neutre (garde le sens, change le ton). "
+                        + "Persiste le résultat dans reformulationIa.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Reformulation générée"),
+                    @ApiResponse(responseCode = "404", description = "Demande non trouvée", content = @Content(schema = @Schema())),
+                    @ApiResponse(responseCode = "502", description = "Service IA indisponible", content = @Content(schema = @Schema()))
+            }
+    )
+    ResponseEntity<DemandeResponseDTO> reformulate(
             @Parameter(description = "ID de la demande", required = true) @PathVariable Long id
     );
 }

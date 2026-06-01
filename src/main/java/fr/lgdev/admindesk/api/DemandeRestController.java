@@ -99,4 +99,11 @@ public class DemandeRestController implements DemandeApiDoc {
     public ResponseEntity<DemandeResponseDTO> summarize(@PathVariable Long id) {
         return ResponseEntity.ok(DemandeResponseDTO.from(service.summarize(id)));
     }
+
+    @Override
+    @PostMapping("/{id}/reformulate")
+    public ResponseEntity<DemandeResponseDTO> reformulate(@PathVariable Long id) {
+        // agentId fixé à 1L pour l'instant — la vraie gestion arrive au TP6 (QuotaService)
+        return ResponseEntity.ok(DemandeResponseDTO.from(service.reformulate(id, 1L)));
+    }
 }

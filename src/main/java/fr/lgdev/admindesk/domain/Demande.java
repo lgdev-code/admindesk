@@ -70,6 +70,9 @@ public class Demande {
     @Column(columnDefinition = "TEXT")
     private String resumeIa;
 
+    @Column(columnDefinition = "TEXT")
+    private String reformulationIa;
+
     @CreationTimestamp
     @Column(name = "date_creation", updatable = false)
     private LocalDateTime dateCreation;

@@ -28,7 +28,6 @@ public class DemandeController {
             @RequestParam(required = false) String        search,
             @RequestParam(defaultValue = "0") int         page,
             Model model) {
-
         model.addAttribute("demandes",       service.search(statut, type, priorite, search, page));
         model.addAttribute("statuts",        StatutDemande.values());
         model.addAttribute("types",          TypeDemande.values());
@@ -129,6 +128,12 @@ public class DemandeController {
     @PostMapping("/{id}/resumer")
     public String resumer(@PathVariable Long id) {
         service.summarize(id);
+        return "redirect:/demandes/" + id;
+    }
+
+    @PostMapping("/{id}/reformuler")
+    public String reformuler(@PathVariable Long id) {
+        service.reformulate(id, 1L);
         return "redirect:/demandes/" + id;
     }
 }
