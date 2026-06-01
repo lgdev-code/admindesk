@@ -27,6 +27,8 @@ public class DemandeResponseDTO {
     private String        commentaireAgent;
     private String        resumeIa;
     private String        reformulationIa;
+    private String        infosManquantesIa;
+    private String        categorieSuggereeIa;
     private LocalDateTime dateCreation;
     private LocalDateTime dateMiseAJour;
 
@@ -48,6 +50,8 @@ public class DemandeResponseDTO {
         dto.setCommentaireAgent(d.getCommentaireAgent());
         dto.setResumeIa(d.getResumeIa());
         dto.setReformulationIa(d.getReformulationIa());
+        dto.setInfosManquantesIa(d.getInfosManquantesIa());
+        dto.setCategorieSuggereeIa(d.getCategorieSuggereeIa());
         dto.setDateCreation(d.getDateCreation());
         dto.setDateMiseAJour(d.getDateMiseAJour());
         return dto;

@@ -106,4 +106,18 @@ public class DemandeRestController implements DemandeApiDoc {
         // agentId fixé à 1L pour l'instant — la vraie gestion arrive au TP6 (QuotaService)
         return ResponseEntity.ok(DemandeResponseDTO.from(service.reformulate(id, 1L)));
     }
+
+    @Override
+    @PostMapping("/{id}/detect-missing-info")
+    public ResponseEntity<DemandeResponseDTO> detectMissingInfo(@PathVariable Long id) {
+        // agentId fixé à 1L pour l'instant — la vraie gestion arrive au TP6 (QuotaService)
+        return ResponseEntity.ok(DemandeResponseDTO.from(service.detectMissingInfo(id, 1L)));
+    }
+
+    @Override
+    @PostMapping("/{id}/categorize")
+    public ResponseEntity<DemandeResponseDTO> categorize(@PathVariable Long id) {
+        // agentId fixé à 1L pour l'instant — la vraie gestion arrive au TP6 (QuotaService)
+        return ResponseEntity.ok(DemandeResponseDTO.from(service.categorize(id, 1L)));
+    }
 }

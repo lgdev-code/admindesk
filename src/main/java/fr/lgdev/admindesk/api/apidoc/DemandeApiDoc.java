@@ -130,4 +130,32 @@ public interface DemandeApiDoc {
     ResponseEntity<DemandeResponseDTO> reformulate(
             @Parameter(description = "ID de la demande", required = true) @PathVariable Long id
     );
+
+    @Operation(
+            summary = "Détecter les informations manquantes via IA (bonus)",
+            description = "Liste les informations manquantes pour instruire la demande, sous forme de questions \"Q: …\". "
+                        + "Persiste le résultat dans infosManquantesIa.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Analyse générée"),
+                    @ApiResponse(responseCode = "404", description = "Demande non trouvée", content = @Content(schema = @Schema())),
+                    @ApiResponse(responseCode = "502", description = "Service IA indisponible", content = @Content(schema = @Schema()))
+            }
+    )
+    ResponseEntity<DemandeResponseDTO> detectMissingInfo(
+            @Parameter(description = "ID de la demande", required = true) @PathVariable Long id
+    );
+
+    @Operation(
+            summary = "Suggérer une catégorie via IA (bonus)",
+            description = "Suggère une catégorie parmi les types existants (format Catégorie / Justification). "
+                        + "Persiste le résultat dans categorieSuggereeIa.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Catégorie suggérée"),
+                    @ApiResponse(responseCode = "404", description = "Demande non trouvée", content = @Content(schema = @Schema())),
+                    @ApiResponse(responseCode = "502", description = "Service IA indisponible", content = @Content(schema = @Schema()))
+            }
+    )
+    ResponseEntity<DemandeResponseDTO> categorize(
+            @Parameter(description = "ID de la demande", required = true) @PathVariable Long id
+    );
 }

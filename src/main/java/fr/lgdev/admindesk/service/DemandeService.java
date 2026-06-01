@@ -89,6 +89,20 @@ public class DemandeService {
         return repo.save(demande);
     }
 
+    @Transactional
+    public Demande detectMissingInfo(Long id, Long agentId) {
+        Demande demande = findById(id);
+        demande.setInfosManquantesIa(aiService.detectMissingInfo(demande, agentId));
+        return repo.save(demande);
+    }
+
+    @Transactional
+    public Demande categorize(Long id, Long agentId) {
+        Demande demande = findById(id);
+        demande.setCategorieSuggereeIa(aiService.categorize(demande, agentId));
+        return repo.save(demande);
+    }
+
     public Map<String, Long> statsByStatus() {
         var map = new LinkedHashMap<String, Long>();
         for (StatutDemande s : StatutDemande.values()) {

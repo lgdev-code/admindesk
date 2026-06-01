@@ -136,4 +136,16 @@ public class DemandeController {
         service.reformulate(id, 1L);
         return "redirect:/demandes/" + id;
     }
+
+    @PostMapping("/{id}/detecter-manques")
+    public String detecterManques(@PathVariable Long id) {
+        service.detectMissingInfo(id, 1L);
+        return "redirect:/demandes/" + id;
+    }
+
+    @PostMapping("/{id}/categoriser")
+    public String categoriser(@PathVariable Long id) {
+        service.categorize(id, 1L);
+        return "redirect:/demandes/" + id;
+    }
 }

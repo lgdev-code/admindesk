@@ -73,6 +73,12 @@ public class Demande {
     @Column(columnDefinition = "TEXT")
     private String reformulationIa;
 
+    @Column(columnDefinition = "TEXT")
+    private String infosManquantesIa;
+
+    @Column(columnDefinition = "TEXT")
+    private String categorieSuggereeIa;
+
     @CreationTimestamp
     @Column(name = "date_creation", updatable = false)
     private LocalDateTime dateCreation;
