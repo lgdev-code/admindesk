@@ -13,10 +13,9 @@ import java.util.stream.Collectors;
 /**
  * AdminDesk — Service IA.
  *
- * État TP4 (D2) — deuxième fonction IA : reformulate().
- *  - call() évolue : accepte désormais un agentId (préparation du QuotaService du TP6) ;
- *  - reformulate() réutilise call() : aucune duplication de la mécanique (chrono, log, try/catch).
- *  - Bonus TP4 : detectMissingInfo() et categorize() sur le MÊME pattern call().
+ * État TP5 (D2) — masquage RGPD : InputSanitizer appliqué au user dans call(),
+ * avant tout envoi au LLM. Aucune donnée personnelle à structure fixe (NIR, tél,
+ * IBAN) ne sort vers Anthropic.
  */
 @Service
 @RequiredArgsConstructor
@@ -24,6 +23,7 @@ import java.util.stream.Collectors;
 public class AIService {
 
     private final ChatClient chatClient;
+    private final InputSanitizer sanitizer;
 
     public String summarize(Demande demande) {
 
@@ -121,12 +121,18 @@ public class AIService {
 
         return call(system, user, agentId);
     }
+
+    /**
+     * Point d'appel unique vers le LLM. Centralise chrono, log et gestion d'erreur.
+     * RGPD : on ne logue JAMAIS le contenu des prompts, seulement la latence et l'agent.
+     */
     private String call(String system, String user, Long agentId) {
         long t0 = System.nanoTime();
+        String safeUser = sanitizer.sanitize(user);   // masquage RGPD avant envoi
         try {
             String content = chatClient.prompt()
                     .system(system)
-                    .user(user)
+                    .user(safeUser)
                     .call()
                     .content();
             log.info("LLM call OK in {} ms — agent={}",

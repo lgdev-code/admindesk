@@ -25,7 +25,7 @@ VALUES
 -- 3
 ('DEM-2025-00003', 'Pierre Moreau', 'p.moreau@orange.fr', '06 55 44 33 22',
  'INSCRIPTION_SCOLAIRE',
- 'Je souhaite inscrire ma fille Emma Moreau, née le 15 avril 2020, en classe de petite section de maternelle pour la rentrée de septembre 2026. Nous venons de nous installer au 8 avenue Victor Hugo dans votre commune. Je fournis le justificatif de domicile, le carnet de santé avec vaccinations à jour, et le livret de famille. Merci de m''indiquer l''école de secteur correspondant à notre adresse.',
+ 'Je souhaite inscrire ma fille Emma Moreau, née le 15 avril 2020, en classe de petite section de maternelle pour la rentrée de septembre 2026. Nous venons de nous installer au 8 avenue Victor Hugo dans votre commune. Je fournis le justificatif de domicile, le carnet de santé avec vaccinations à jour, le livret de famille et son numero de sécurité sociale 220059999999999. Merci de m''indiquer l''école de secteur correspondant à notre adresse.',
  'TRAITE', 'NORMALE', 'Jean-Claude Petit',
  'Inscription validée. École Jules Ferry secteur confirmé. Convocation envoyée par mail.',
  CURRENT_TIMESTAMP - INTERVAL '30' DAY, CURRENT_TIMESTAMP - INTERVAL '20' DAY),
