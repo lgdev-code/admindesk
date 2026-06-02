@@ -25,9 +25,9 @@ public class InputSanitizer {
     private static final Pattern NIR =
             Pattern.compile("\\b\\d(?:\\s?\\d){14}\\b");
 
-    // Téléphone : 8 (NC) à 10 (FR) chiffres, espaces / points tolérés
+    // Téléphone : 6 (NC) à 10 (FR) chiffres, espaces / points tolérés
     private static final Pattern TEL =
-            Pattern.compile("\\b(?:\\d[\\s.]?){7,9}\\d\\b");
+            Pattern.compile("\\b(?:\\d[\\s.]?){5,9}\\d\\b");
 
     /**
      * Remplace NIR / IBAN / téléphone par des placeholders typés.
