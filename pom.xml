@@ -15,7 +15,7 @@
     <groupId>fr.lgdev</groupId>
     <artifactId>admindesk</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <n>AdminDesk</n>
+    <name>AdminDesk</name>
     <description>Application fil rouge - IA dans les Developpements (IFAP)</description>
 
     <properties>
@@ -84,6 +84,16 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Cache (TP7) : abstraction Spring Cache + implémentation Caffeine -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
         </dependency>
 
         <!-- Spring AI – Anthropic (LLM) -->

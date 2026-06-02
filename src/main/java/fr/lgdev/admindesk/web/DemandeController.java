@@ -5,6 +5,7 @@ import fr.lgdev.admindesk.domain.StatutDemande;
 import fr.lgdev.admindesk.domain.TypeDemande;
 import fr.lgdev.admindesk.dto.DemandeFormDTO;
 import fr.lgdev.admindesk.service.DemandeService;
+import fr.lgdev.admindesk.service.AiUsageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,7 @@ public class DemandeController {
     private static final Long AGENT_ID_PAR_DEFAUT = 1L;
 
     private final DemandeService service;
+    private final AiUsageService aiUsageService;
 
     @GetMapping
     public String list(
@@ -54,6 +56,9 @@ public class DemandeController {
         model.addAttribute("statsStatut",   service.statsByStatus());
         model.addAttribute("statsType",     service.statsByType());
         model.addAttribute("statsPriorite", service.statsByPriority());
+        // Bonus TP7 — monitoring IA
+        model.addAttribute("usageByAgent",  aiUsageService.usageByAgentToday());
+        model.addAttribute("cacheStats",    aiUsageService.cacheStats());
         return "demandes/dashboard";
     }
 

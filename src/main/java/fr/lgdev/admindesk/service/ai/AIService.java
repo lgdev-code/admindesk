@@ -5,6 +5,7 @@ import fr.lgdev.admindesk.domain.TypeDemande;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -17,6 +18,10 @@ import java.util.stream.Collectors;
  *  - QuotaService.check() avant l'appel (peut lever 429) ;
  *  - InputSanitizer.sanitize() masque le user ;
  *  - QuotaService.recordUsage() APRÈS succès uniquement (jamais sur échec).
+ *
+ * État TP7 (D3) — les 4 fonctions IA sont @Cacheable (une région de cache par fonction :
+ *  summaries / reformulations / infos-manquantes / categories), clé = hash du contenu.
+ *  Un cache hit court-circuite la méthode : zéro appel LLM, quota intact.
  */
 @Service
 @RequiredArgsConstructor
@@ -27,6 +32,8 @@ public class AIService {
     private final InputSanitizer sanitizer;
     private final QuotaService quotas;
 
+    @Cacheable(value = "summaries",
+               key = "T(fr.lgdev.admindesk.util.Hash).sha256(#demande.description)")
     public String summarize(Demande demande, Long agentId) {
 
         String system = """
@@ -58,6 +65,8 @@ public class AIService {
         return call(system, user, agentId);
     }
 
+    @Cacheable(value = "reformulations",
+               key = "T(fr.lgdev.admindesk.util.Hash).sha256(#demande.description)")
     public String reformulate(Demande demande, Long agentId) {
 
         String system = """
@@ -77,6 +86,8 @@ public class AIService {
         return call(system, user, agentId);
     }
 
+    @Cacheable(value = "infos-manquantes",
+               key = "T(fr.lgdev.admindesk.util.Hash).sha256(#demande.description)")
     public String detectMissingInfo(Demande demande, Long agentId) {
 
         String system = """
@@ -96,6 +107,8 @@ public class AIService {
         return call(system, user, agentId);
     }
 
+    @Cacheable(value = "categories",
+               key = "T(fr.lgdev.admindesk.util.Hash).sha256(#demande.description)")
     public String categorize(Demande demande, Long agentId) {
 
         // Build the allowed list from the enum so the prompt stays in sync with TypeDemande.

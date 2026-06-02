@@ -107,6 +107,69 @@
 
     </div>
 
+    <!-- Bonus TP7 — Monitoring IA -->
+    <h5 class="text-muted mb-3"><i class="bi bi-cpu me-2"></i>Monitoring IA</h5>
+    <div class="row g-4 mb-4">
+
+        <!-- Usages IA par agent (aujourd'hui) -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header fw-semibold">
+                    <i class="bi bi-person-badge me-2"></i>Usages IA par agent — aujourd'hui
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr><th>Agent</th><th class="text-end">Appels</th><th class="text-end">Tokens</th></tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="row : ${usageByAgent}">
+                            <td th:text="${row.agentId}"></td>
+                            <td class="text-end"><span class="badge bg-primary rounded-pill" th:text="${row.appels}"></span></td>
+                            <td class="text-end text-muted" th:text="${row.tokens}"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(usageByAgent)}">
+                            <td colspan="3" class="text-center text-muted py-3">Aucun usage IA aujourd'hui</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cache IA (hit-rate par région) -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-lightning-charge me-2"></i>Cache IA — hit-rate</span>
+                    <a href="/cache/stats" target="_blank" class="small text-decoration-none">/cache/stats</a>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr><th>Région</th><th class="text-end">Hits</th><th class="text-end">Miss</th><th class="text-end">Taux</th></tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="entry : ${cacheStats}">
+                            <td th:text="${entry.key}"></td>
+                            <td class="text-end" th:text="${entry.value.hitCount}"></td>
+                            <td class="text-end" th:text="${entry.value.missCount}"></td>
+                            <td class="text-end">
+                                <span class="badge bg-success rounded-pill"
+                                      th:text="${#numbers.formatPercent(entry.value.hitRate, 1, 0)}"></span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#maps.isEmpty(cacheStats)}">
+                            <td colspan="4" class="text-center text-muted py-3">Aucune région de cache active</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     <!-- Liens dev -->
     <div class="alert alert-light border d-flex align-items-center gap-3">
         <i class="bi bi-braces fs-4 text-primary"></i>
