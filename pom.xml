@@ -15,7 +15,7 @@
     <groupId>fr.lgdev</groupId>
     <artifactId>admindesk</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <n>AdminDesk</n>
+    <name>AdminDesk</name>
     <description>Application fil rouge - IA dans les Developpements (IFAP)</description>
 
     <properties>
