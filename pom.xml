@@ -21,6 +21,8 @@
     <properties>
         <java.version>25</java.version>
         <spring-ai.version>1.1.0</spring-ai.version>
+        <resilience4j.version>2.3.0</resilience4j.version>
+        <logstash-encoder.version>8.0</logstash-encoder.version>
     </properties>
 
     <dependencyManagement>
@@ -94,6 +96,24 @@
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
+        </dependency>
+
+        <!-- Robustesse production (TP8) : Resilience4j + AOP (requis par les annotations) -->
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-spring-boot3</artifactId>
+            <version>${resilience4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+        <!-- Logs structurés JSON (TP8) -->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>${logstash-encoder.version}</version>
         </dependency>
 
         <!-- Spring AI – Anthropic (LLM) -->

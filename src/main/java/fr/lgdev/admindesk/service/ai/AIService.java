@@ -4,11 +4,13 @@ import fr.lgdev.admindesk.domain.Demande;
 import fr.lgdev.admindesk.domain.TypeDemande;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.chat.client.ChatClient;
+import org.slf4j.MDC;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.UUID;
+import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
 
 /**
@@ -22,15 +24,19 @@ import java.util.stream.Collectors;
  * État TP7 (D3) — les 4 fonctions IA sont @Cacheable (une région de cache par fonction :
  *  summaries / reformulations / infos-manquantes / categories), clé = hash du contenu.
  *  Un cache hit court-circuite la méthode : zéro appel LLM, quota intact.
+ *
+ * État TP8 (D3) — l'appel réseau est délégué à LlmClient (Resilience4j : retry / timeout /
+ *  circuit breaker + fallback). call() ajoute le contexte MDC (requestId / agentId / function)
+ *  pour des logs JSON exploitables. RGPD : on ne logue jamais le contenu du prompt.
  */
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class AIService {
 
-    private final ChatClient chatClient;
     private final InputSanitizer sanitizer;
     private final QuotaService quotas;
+    private final LlmClient llmClient;
 
     @Cacheable(value = "summaries",
                key = "T(fr.lgdev.admindesk.util.Hash).sha256(#demande.description)")
@@ -62,7 +68,7 @@ public class AIService {
                 %s
                 """.formatted(demande.getDescription());
 
-        return call(system, user, agentId);
+        return call(system, user, agentId, "summarize");
     }
 
     @Cacheable(value = "reformulations",
@@ -83,7 +89,7 @@ public class AIService {
                 %s
                 """.formatted(demande.getDescription());
 
-        return call(system, user, agentId);
+        return call(system, user, agentId, "reformulate");
     }
 
     @Cacheable(value = "infos-manquantes",
@@ -104,7 +110,7 @@ public class AIService {
                 %s
                 """.formatted(demande.getDescription());
 
-        return call(system, user, agentId);
+        return call(system, user, agentId, "detect-missing-info");
     }
 
     @Cacheable(value = "categories",
@@ -134,31 +140,40 @@ public class AIService {
                 %s
                 """.formatted(demande.getDescription());
 
-        return call(system, user, agentId);
+        return call(system, user, agentId, "categorize");
     }
 
     /**
      * Point d'appel unique vers le LLM. Centralise chrono, log et gestion d'erreur.
      * RGPD : on ne logue JAMAIS le contenu des prompts, seulement la latence et l'agent.
      */
-    private String call(String system, String user, Long agentId) {
+    private String call(String system, String user, Long agentId, String function) {
         quotas.check(agentId);                          // garde-fou quota (peut lever 429)
+        String safeUser = sanitizer.sanitize(user);     // masquage RGPD avant envoi
+
+        // MDC : chaque ligne de log de l'appel portera requestId / agentId / function (logs JSON).
+        MDC.put("requestId", UUID.randomUUID().toString());
+        MDC.put("agentId", String.valueOf(agentId));
+        MDC.put("function", function);
         long t0 = System.nanoTime();
-        String safeUser = sanitizer.sanitize(user);   // masquage RGPD avant envoi
         try {
-            String content = chatClient.prompt()
-                    .system(system)
-                    .user(safeUser)
-                    .call()
-                    .content();
-            log.info("LLM call OK in {} ms — agent={}",
-                    (System.nanoTime() - t0) / 1_000_000, agentId);
-            quotas.recordUsage(agentId, estimateTokens(content));  // APRÈS succès uniquement
+            // Appel durci par Resilience4j (retry / timeout / circuit breaker) — voir LlmClient.
+            String content = llmClient.complete(system, safeUser).join();
+            int tokens = estimateTokens(content);
+            log.info("LLM call OK — tokens={}, latency_ms={}",
+                    tokens, (System.nanoTime() - t0) / 1_000_000);
+            quotas.recordUsage(agentId, tokens);        // APRÈS succès uniquement
             return content;
-        } catch (Exception e) {
-            log.error("LLM call failed after {} ms — agent={}",
-                    (System.nanoTime() - t0) / 1_000_000, agentId, e);
-            throw new AIServiceException("Échec appel IA", e);
+        } catch (CompletionException e) {
+            // .join() encapsule la cause réelle (fallback / exception classifiée).
+            Throwable cause = e.getCause() != null ? e.getCause() : e;
+            log.error("LLM call failed — {}", cause.toString());   // jamais le contenu du prompt
+            if (cause instanceof AIServiceException ase) {
+                throw ase;
+            }
+            throw new AIServiceException("Échec appel IA", cause);
+        } finally {
+            MDC.clear();
         }
     }
 

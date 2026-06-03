@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- TP8 — Logs structurés JSON (logstash-logback-encoder).
+         Chaque ligne = un objet JSON ; les clés MDC (requestId / agentId / function)
+         posées dans AIService.call() y apparaissent automatiquement.
+         Indexable tel quel dans Elasticsearch / Grafana Loki / Splunk. -->
+    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeMdcKeyName>requestId</includeMdcKeyName>
+            <includeMdcKeyName>agentId</includeMdcKeyName>
+            <includeMdcKeyName>function</includeMdcKeyName>
+            <customFields>{"app":"admindesk"}</customFields>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="JSON"/>
+    </root>
+
+    <!-- Détail applicatif en DEBUG, le reste en INFO. -->
+    <logger name="fr.lgdev" level="DEBUG"/>
+
+</configuration>
