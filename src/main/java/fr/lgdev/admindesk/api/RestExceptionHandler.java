@@ -1,6 +1,7 @@
 package fr.lgdev.admindesk.api;
 
 import fr.lgdev.admindesk.service.ai.AIServiceException;
+import fr.lgdev.admindesk.service.ai.InputTooLargeException;
 import fr.lgdev.admindesk.service.ai.QuotaExceededException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +53,15 @@ public class RestExceptionHandler {
                 "Le service d'IA est temporairement indisponible. Réessayez dans un instant.");
         problem.setType(URI.create("https://admindesk.lgdev.fr/errors/ai-service"));
         problem.setTitle("Erreur du service IA");
+        return problem;
+    }
+
+    @ExceptionHandler(InputTooLargeException.class)
+    public ProblemDetail inputTooLarge(InputTooLargeException ex) {
+        log.warn("Input rejected: {}", ex.getMessage());
+        var problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+        problem.setType(URI.create("https://admindesk.lgdev.fr/errors/input-too-large"));
+        problem.setTitle("Demande trop longue");
         return problem;
     }
 

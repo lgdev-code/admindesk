@@ -96,6 +96,12 @@
             <artifactId>caffeine</artifactId>
         </dependency>
 
+        <!-- Robustesse (TP9) : Spring Retry (API RetryTemplate, sans AOP) -->
+        <dependency>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
+        </dependency>
+
         <!-- Spring AI – Anthropic (LLM) -->
         <dependency>
             <groupId>org.springframework.ai</groupId>
