@@ -2,6 +2,7 @@ package fr.lgdev.admindesk.config;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.support.RetryTemplate;
@@ -26,5 +27,15 @@ public class AIConfig {
                 .exponentialBackoff(300, 2.0, 5000)
                 .retryOn(Exception.class)
                 .build();
+    }
+
+    /**
+     * TP9 (D4) — Découpage des documents avant embedding.
+     * Paramètres : chunkSize=300 tokens, minChunkSizeChars=50, minChunkLengthToEmbed=10,
+     * maxNumChunks=100, keepSeparator=true. Volontairement sous-optimaux — tuning en D5.
+     */
+    @Bean
+    public TokenTextSplitter tokenTextSplitter() {
+        return new TokenTextSplitter(300, 50, 10, 100, true);
     }
 }
