@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ import java.util.List;
  * TRUNCATE de la table vector_store entre deux runs si besoin (cf. sujet).
  */
 @Component
+@Profile("prod")
 @RequiredArgsConstructor
 @Slf4j
 public class KnowledgeBaseLoader implements ApplicationRunner {

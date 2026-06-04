@@ -6,6 +6,7 @@ import org.springframework.ai.document.Document;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.ai.vectorstore.filter.FilterExpressionBuilder;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.Map;
  * encapsulé par l'abstraction Spring AI VectorStore.
  */
 @Service
+@Profile("prod")
 @RequiredArgsConstructor
 @Slf4j
 public class IndexingService {
