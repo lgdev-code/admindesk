@@ -30,9 +30,9 @@ public interface DemandeRepository extends JpaRepository<Demande, Long> {
               AND (:type     IS NULL OR d.type     = :type)
               AND (:priorite IS NULL OR d.priorite = :priorite)
               AND (:search   IS NULL
-                   OR LOWER(d.nomDemandeur) LIKE LOWER(CONCAT('%', :search, '%'))
-                   OR LOWER(d.description)  LIKE LOWER(CONCAT('%', :search, '%'))
-                   OR LOWER(d.reference)    LIKE LOWER(CONCAT('%', :search, '%')))
+                   OR LOWER(d.nomDemandeur) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))
+                   OR LOWER(d.description)  LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))
+                   OR LOWER(d.reference)    LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')))
             ORDER BY d.dateCreation DESC
             """)
     Page<Demande> rechercher(

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Assistant RAG')}"></head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container py-4" style="max-width: 820px;">
+
+    <h1 class="h3 mb-1">
+        <i class="bi bi-robot me-2 text-primary"></i>Assistant RAG
+    </h1>
+    <p class="text-muted">
+        Posez une question. La réponse est générée à partir de la base documentaire indexée,
+        et accompagnée de ses sources.
+    </p>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <label for="question" class="form-label fw-semibold">Votre question</label>
+            <textarea id="question" class="form-control mb-3" rows="3"
+                      placeholder="Ex. : Quel est le délai d'instruction d'un permis de construire ?"></textarea>
+            <button id="askBtn" class="btn btn-primary" onclick="ask()">
+                <i class="bi bi-send me-1"></i>Demander
+            </button>
+            <span class="text-muted small ms-2">Astuce : Ctrl/Cmd + Entrée pour envoyer.</span>
+        </div>
+    </div>
+
+    <!-- Résultat -->
+    <div id="result" class="d-none">
+        <div class="ia-block">
+            <div class="fw-semibold mb-2"><i class="bi bi-chat-left-text me-1"></i>Réponse</div>
+            <pre id="answer" class="description mb-0"></pre>
+        </div>
+        <div class="mt-3">
+            <span class="text-muted small me-2">Sources :</span>
+            <span id="sources"></span>
+        </div>
+    </div>
+
+    <div id="error" class="alert alert-danger d-none mt-3"></div>
+
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+<script>
+    const askBtn = document.getElementById('askBtn');
+
+    async function ask() {
+        const question = document.getElementById('question').value.trim();
+        if (!question) return;
+
+        const result   = document.getElementById('result');
+        const errorBox = document.getElementById('error');
+        errorBox.classList.add('d-none');
+        askBtn.disabled  = true;
+        askBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Recherche…';
+
+        try {
+            const res = await fetch('/api/v1/rag/ask', {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify({ question })
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+
+            const data = await res.json();
+            document.getElementById('answer').textContent = data.answer;
+
+            const sources = data.sources || [];
+            document.getElementById('sources').innerHTML = sources.length
+                ? sources.map(s => '<span class="badge bg-secondary me-1">' + s + '</span>').join('')
+                : '<span class="text-muted small">aucune</span>';
+
+            result.classList.remove('d-none');
+        } catch (e) {
+            errorBox.textContent = 'Erreur : ' + e.message;
+            errorBox.classList.remove('d-none');
+        } finally {
+            askBtn.disabled  = false;
+            askBtn.innerHTML = '<i class="bi bi-send me-1"></i>Demander';
+        }
+    }
+
+    document.getElementById('question').addEventListener('keydown', e => {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) ask();
+    });
+</script>
+
+</body>
+</html>
