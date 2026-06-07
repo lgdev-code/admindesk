@@ -1,0 +1,14 @@
+# ============================================================================
+#  Eval set — TP11 (tuning du chunking)
+#  5 questions. Pour chacune : la SOURCE attendue doit figurer dans le top-3
+#  des chunks ramenés (recall@3). Tester via Swagger : POST /api/v1/rag/ask
+#  Format :  <question>  =>  <source attendue>
+# ============================================================================
+
+1. Quel est le délai d'instruction d'un permis de construire ?      => CUNC-PS-PC
+2. Quels documents fournir pour une demande d'aide au logement ?    => PROC-LOG-2024
+3. J'ai construit une véranda de 18 m², que dois-je faire ?         => TICKETS-URBA
+4. Comment obtenir une copie d'un acte de naissance ?               => LP-2012-2
+5. Quelle est la durée maximale d'une vente en liquidation ?        => LP-2014-7
+
+# recall@3 = (nombre de questions où la source attendue est dans le top-3) / 5
