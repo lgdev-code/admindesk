@@ -1,14 +1,30 @@
 # ============================================================================
-#  Eval set — TP11 (tuning du chunking)
-#  5 questions. Pour chacune : la SOURCE attendue doit figurer dans le top-3
-#  des chunks ramenés (recall@3). Tester via Swagger : POST /api/v1/rag/ask
-#  Format :  <question>  =>  <source attendue>
+#  Eval set — TP11 (tuning du chunking) — corpus ~49 documents
+#  5 "bottes de foin" = longs textes reglementaires REELS (Livre IV du Code de
+#  commerce NC, des dizaines d'articles). Chaque question cible un SEUIL CHIFFRE
+#  precis enfoui dans UN article, au milieu d'un long document. Ces seuils sont
+#  specifiques a la NC : le modele ne peut pas les deviner, il doit les LIRE.
+#  Les 5 longs textes partagent le meme vocabulaire (concurrence, marche, "40
+#  jours ouvres", "F CFP", "25 %"...) -> a GROS chunk, leurs vecteurs se diluent
+#  et se confondent -> la bonne source decroche du top-3.
+#  Noter, par question : le RANG de la source (-> recall@3 + MRR) ET si la
+#  REPONSE donne la bonne valeur : O / N.
+#  Tester via Swagger : POST /api/v1/rag/ask
 # ============================================================================
 
-1. Quel est le délai d'instruction d'un permis de construire ?      => CUNC-PS-PC
-2. Quels documents fournir pour une demande d'aide au logement ?    => PROC-LOG-2024
-3. J'ai construit une véranda de 18 m², que dois-je faire ?         => TICKETS-URBA
-4. Comment obtenir une copie d'un acte de naissance ?               => LP-2012-2
-5. Quelle est la durée maximale d'une vente en liquidation ?        => LP-2014-7
+1. A partir de quelle surface de vente un magasin de commerce de detail est-il soumis a autorisation ?
+   => CCNC-COMMERCE-DETAIL | bonne valeur : 600 m² (article Lp. 432-1)
+2. Quel est le seuil de chiffre d'affaires total declenchant le controle d'une operation de concentration ?
+   => CCNC-CONCENTRATIONS  | bonne valeur : 1 200 000 000 F CFP (article Lp. 431-2)
+3. Quel est le delai d'instruction d'une demande de regulation de marche ?
+   => CCNC-REGULATION      | bonne valeur : 40 jours ouvres (100 en examen approfondi) (article Lp. 413-13)
+4. A partir de quelle part de marche l'Autorite peut-elle agir en cas de preoccupations de concurrence ?
+   => CCNC-ANTICONC        | bonne valeur : 25 % + CA > 600 000 000 F CFP (article Lp. 422-1)
+5. Dans le regime de liberte surveillee, combien de temps avant leur entree en vigueur les prix sont-ils deposes ?
+   => CCNC-PRIX            | bonne valeur : 15 jours (article Lp. 411-2)
 
-# recall@3 = (nombre de questions où la source attendue est dans le top-3) / 5
+# Pieges (valeurs SOEURS presentes dans d'autres longs textes) :
+#  - "40 jours ouvres" figure aussi en concentrations (Lp.431-5) et commerce de detail (Lp.432-3)
+#  - "25 % + 600 000 000 F CFP" figure aussi en commerce de detail (Lp.432-1-II)
+#  - de nombreux montants en F CFP et delais en jours ouvres sont disperses dans les 5 textes
+# recall@3 = nb de rangs <= 3 / 5     MRR = moyenne de (1/rang)     Reponses correctes = nb de O / 5

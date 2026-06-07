@@ -1,17 +1,7 @@
 FAQ URBANISME — QUESTIONS FRÉQUENTES
 
-Q : Où déposer ma demande d'autorisation d'urbanisme ?
-R : Au service urbanisme de la commune, ou de la province Sud selon la compétence applicable.
-
-Q : Dois-je afficher mon permis de construire ?
-R : Oui. L'autorisation doit être affichée sur le terrain, de façon visible depuis la voie publique,
-pendant toute la durée du chantier.
-
-Q : Une clôture nécessite-t-elle une autorisation ?
-R : Une déclaration préalable peut être exigée selon la zone et le plan d'urbanisme directeur applicable.
-
-Q : Les panneaux photovoltaïques sont-ils soumis à autorisation ?
-R : L'installation est soumise à déclaration préalable lorsque l'habitation est située dans certaines zones.
-
-Q : Puis-je commencer les travaux dès le dépôt du dossier ?
-R : Non. Il faut attendre l'autorisation, ou l'expiration du délai d'instruction.
+Où déposer ma demande ? Au service urbanisme de la commune ou de la province Sud selon la compétence.
+Dois-je afficher mon permis ? Oui, sur le terrain, visible depuis la voie publique, pendant toute la durée du chantier.
+Une clôture nécessite-t-elle une autorisation ? Une déclaration préalable peut être exigée selon la zone et le PUD.
+Les panneaux photovoltaïques ? Déclaration préalable dans certaines zones.
+Puis-je commencer dès le dépôt ? Non : attendre l'autorisation ou l'expiration du délai d'instruction.

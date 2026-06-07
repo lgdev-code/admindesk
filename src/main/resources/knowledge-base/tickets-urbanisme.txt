@@ -1,15 +1,8 @@
 TICKETS URBANISME RÉSOLUS
 
-Ticket #1812 — Délai d'instruction dépassé
-Un usager signale un dépassement du délai sur son permis de construire (province Sud, délai de
-droit commun : 3 mois). Après vérification, le dossier était incomplet et des pièces ont été
-réclamées. Réponse apportée : le délai d'instruction court à compter du dépôt d'un dossier complet.
-
-Ticket #1823 — Véranda de 18 m² construite sans autorisation
-Un usager a édifié une véranda de 18 m² sans démarche préalable. Une emprise au sol comprise entre
-5 et 20 m² relève d'une déclaration préalable de travaux, et non d'un permis de construire.
-Réponse apportée : régulariser par le dépôt d'une déclaration préalable.
-
-Ticket #1840 — Clôture en limite de propriété
-Une déclaration préalable peut être exigée selon la zone. Vérifier le plan d'urbanisme directeur
-applicable avant travaux.
+Ticket #1812 — Délai d'instruction dépassé sur un permis de construire (province Sud, délai de droit commun : 3 mois).
+Dossier incomplet ; pièces réclamées. Le délai court à compter du dossier complet.
+Ticket #1823 — Véranda de 18 m² sans autorisation : une emprise de 5 à 20 m² relève d'une déclaration préalable, pas d'un
+permis. Régulariser par déclaration préalable.
+Ticket #1840 — Clôture en limite de propriété : déclaration préalable selon la zone ; vérifier le PUD.
+Ticket #1856 — Fin de chantier : déposer la déclaration d'achèvement ; certificat de conformité sous 2 mois.
