@@ -31,8 +31,8 @@ public class AIConfig {
 
     /**
      * TP9 (D4) — Découpage des documents avant embedding.
-     * Paramètres : chunkSize=800 tokens, minChunkSizeChars=50, minChunkLengthToEmbed=10,
-     * maxNumChunks=100, keepSeparator=true. Volontairement sous-optimaux — tuning en D5.
+     * Paramètres : chunkSize=800 tokens (optimum mesuré au TP11), minChunkSizeChars=50, minChunkLengthToEmbed=10,
+     * maxNumChunks=100, keepSeparator=true. Réglé au TP11 ; le RAG passe en recherche hybride au TP12.
      */
     @Bean
     public TokenTextSplitter tokenTextSplitter() {

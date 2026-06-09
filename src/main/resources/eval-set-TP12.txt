@@ -1,0 +1,20 @@
+# ============================================================================
+#  Eval set — TP12 (recherche hybride) — validation LEXICALE
+#  3 questions a REFERENCE D'ARTICLE NUE (chiffres "plats", quasi sans contenu
+#  semantique) que la recherche semantique seule classe mal, et que le plein
+#  texte (BM25) retrouve. Protocole : poser chaque question AVANT (semantique
+#  seule) puis APRES (hybride) et comparer le rang de la bonne source.
+#  Tester via Swagger : POST /api/v1/rag/ask
+# ============================================================================
+
+1. Que prevoit l'article Lp. 432-1 ?   => CCNC-COMMERCE-DETAIL   (semantique: rang 3     | hybride: rang 1)
+2. Que prevoit l'article Lp. 413-1 ?   => CCNC-REGULATION        (semantique: hors top-3 | hybride: rang 1)
+3. Que prevoit l'article Lp. 22-3 ?    => CAFAT-AF               (semantique: hors top-3 | hybride: rang 2)
+
+# Attendu : hybride recall@3 = 3/3, MRR ~ 0,83 ; semantique seule recall@3 ~ 1/3
+# (sur 413-1 et 22-3 elle renvoie des chunks "commerce" hors-sujet).
+#
+# Temoins de NON-REGRESSION (acronymes deja bien classes en semantique, doivent
+# le rester en hybride -- HORS calcul du delta) :
+#   - Qu'est-ce que le RUAMM ?       => CAFAT-RUAMM
+#   - A quoi sert l'extrait Kbis ?   => RCS-NC
