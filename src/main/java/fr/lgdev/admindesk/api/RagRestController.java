@@ -1,8 +1,10 @@
 package fr.lgdev.admindesk.api;
 
+import fr.lgdev.admindesk.dto.RagFeedbackRequestDTO;
 import fr.lgdev.admindesk.dto.RagRequestDTO;
 import fr.lgdev.admindesk.dto.RagResponseDTO;
 import fr.lgdev.admindesk.service.DemandeService;
+import fr.lgdev.admindesk.service.rag.RagAuditService;
 import fr.lgdev.admindesk.service.rag.RagService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -18,7 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * TP10 (D4) — Expose le RAG en REST.
  *   POST /api/v1/rag/ask           : question libre (body JSON)
- *   GET  /api/v1/rag/ask?demandeId : question générée à partir d'une demande existante
+ *   GET  /api/v1/rag/ask?demandeId : question generee a partir d'une demande existante
+ *   POST /api/v1/rag/feedback      : vote 👍/👎 sur une reponse (TP bonus D5)
  */
 @RestController
 @RequestMapping("/api/v1/rag")
@@ -28,6 +31,7 @@ public class RagRestController {
 
     private final RagService ragService;
     private final DemandeService demandeService;
+    private final RagAuditService ragAuditService;
 
     @PostMapping("/ask")
     public ResponseEntity<RagResponseDTO> ask(@Valid @RequestBody RagRequestDTO request) {
@@ -41,5 +45,12 @@ public class RagRestController {
                 Quelle procédure s'applique pour cette demande de type %s : %s
                 """.formatted(d.getType().getLibelle(), d.getDescription());
         return ResponseEntity.ok(ragService.answer(q));
+    }
+
+    /** Le frontend renvoie le requestId recu avec /ask, plus le vote UP/DOWN. */
+    @PostMapping("/feedback")
+    public ResponseEntity<Void> feedback(@Valid @RequestBody RagFeedbackRequestDTO request) {
+        ragAuditService.recordFeedback(request.getRequestId(), request.getVote());
+        return ResponseEntity.noContent().build();
     }
 }

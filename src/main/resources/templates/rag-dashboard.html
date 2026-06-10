@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('RAG Quality')}"></head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container py-4" style="max-width: 960px;">
+
+    <h1 class="h3 mb-1">
+        <i class="bi bi-speedometer2 me-2 text-primary"></i>RAG Quality
+    </h1>
+    <p class="text-muted">
+        Vue opérationnelle de la qualité du RAG sur les 30 derniers jours&nbsp;: latence, misses,
+        refus poli, feedback utilisateur, recall@3 et sources les plus citées.
+    </p>
+
+    <!-- Tuiles métriques -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-4">
+            <div class="card shadow-sm h-100"><div class="card-body">
+                <div class="text-muted small">Latence p95 retrieval</div>
+                <div class="h4 mb-0"><span id="retrievalP95">–</span></div>
+            </div></div>
+        </div>
+        <div class="col-6 col-md-4">
+            <div class="card shadow-sm h-100"><div class="card-body">
+                <div class="text-muted small">Latence p95 totale</div>
+                <div class="h4 mb-0"><span id="totalP95">–</span> <span id="totalP95Flag"></span></div>
+            </div></div>
+        </div>
+        <div class="col-6 col-md-4">
+            <div class="card shadow-sm h-100"><div class="card-body">
+                <div class="text-muted small">Taux de misses retrieval</div>
+                <div class="h4 mb-0"><span id="missRate">–</span></div>
+            </div></div>
+        </div>
+        <div class="col-6 col-md-4">
+            <div class="card shadow-sm h-100"><div class="card-body">
+                <div class="text-muted small">Taux de refus poli</div>
+                <div class="h4 mb-0"><span id="refusalRate">–</span></div>
+            </div></div>
+        </div>
+        <div class="col-6 col-md-4">
+            <div class="card shadow-sm h-100"><div class="card-body">
+                <div class="text-muted small">Feedback 👍 / 👎</div>
+                <div class="h4 mb-0"><span id="feedback">–</span></div>
+            </div></div>
+        </div>
+        <div class="col-6 col-md-4">
+            <div class="card shadow-sm h-100"><div class="card-body">
+                <div class="text-muted small">recall@3 (eval)</div>
+                <div class="h4 mb-0"><span id="recall">–</span> <span id="recallFlag"></span></div>
+            </div></div>
+        </div>
+    </div>
+
+    <!-- Histogramme des sources -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="fw-semibold mb-3">
+                <i class="bi bi-bar-chart-line me-1"></i>Sources les plus citées (30 derniers jours)
+            </div>
+            <canvas id="sourcesChart" height="200"></canvas>
+            <div id="sourcesWarn" class="small text-warning mt-2"></div>
+        </div>
+    </div>
+
+    <!-- Indexés mais jamais ramenés (slide 22) -->
+    <div id="neverBox" class="alert alert-warning d-none mt-3">
+        <i class="bi bi-exclamation-triangle me-1"></i>
+        <strong>Documents indexés mais jamais ramenés (30 j) :</strong>
+        <span id="neverList"></span>
+        <div class="small mt-1">Revue métier conseillée : retirer ou re-chunker (chunks trop courts&nbsp;?).</div>
+    </div>
+
+    <p class="text-muted small mt-3">
+        Données exposées par <code>GET /api/v1/rag/dashboard</code> (agrégations sur
+        <code>rag_audit</code> et <code>rag_feedback</code>).
+    </p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script>
+    const sec = ms => (ms / 1000).toFixed(1) + ' s';
+    const pct = v => v.toFixed(1) + ' %';
+
+    async function loadDashboard() {
+        const res = await fetch('/api/v1/rag/dashboard');
+        if (!res.ok) { console.error('dashboard fetch failed', res.status); return; }
+        const d = await res.json();
+
+        document.getElementById('retrievalP95').textContent = sec(d.retrievalP95Ms);
+        document.getElementById('totalP95').textContent = sec(d.totalP95Ms);
+        document.getElementById('totalP95Flag').innerHTML =
+            d.totalP95Ms > 2000 ? '<span class="text-warning">⚠</span>' : '';
+        document.getElementById('missRate').textContent = pct(d.missRatePct);
+        document.getElementById('refusalRate').textContent = pct(d.refusalRatePct);
+        document.getElementById('feedback').textContent =
+            Math.round(d.thumbsUpPct) + ' % / ' + Math.round(d.thumbsDownPct) + ' %';
+        document.getElementById('recall').textContent = d.recallAt3.toFixed(2);
+        document.getElementById('recallFlag').innerHTML =
+            d.recallAt3 >= 0.8 ? '<span class="text-success">✓</span>'
+                               : '<span class="text-warning">⚠</span>';
+
+        const labels = d.topSources.map(s => s.source);
+        const values = d.topSources.map(s => s.sharePct);
+        const colors = d.topSources.map(s => s.lowUsage ? '#f59e0b' : '#0d6efd');
+        new Chart(document.getElementById('sourcesChart'), {
+            type: 'bar',
+            data: { labels, datasets: [{ label: '% des citations', data: values, backgroundColor: colors }] },
+            options: {
+                indexAxis: 'y',
+                plugins: { legend: { display: false } },
+                scales: { x: { ticks: { callback: v => v + ' %' } } }
+            }
+        });
+
+        const low = d.topSources.filter(s => s.lowUsage).map(s => s.source);
+        document.getElementById('sourcesWarn').textContent =
+            low.length ? '⚠ Indexé(s) mais peu utilisé(s) : ' + low.join(', ') : '';
+
+        const never = d.neverRetrieved || [];
+        if (never.length) {
+            document.getElementById('neverList').textContent = never.join(', ');
+            document.getElementById('neverBox').classList.remove('d-none');
+        }
+    }
+
+    loadDashboard();
+</script>
+</body>
+</html>

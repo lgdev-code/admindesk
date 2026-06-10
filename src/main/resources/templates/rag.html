@@ -37,6 +37,18 @@
             <span class="text-muted small me-2">Sources :</span>
             <span id="sources"></span>
         </div>
+        <div id="feedback" class="mt-3 d-none">
+            <span class="text-muted small me-2">Cette réponse vous a-t-elle aidé ?</span>
+            <button id="thumbUp" class="btn btn-sm btn-outline-success" onclick="sendFeedback('UP')" title="Utile">
+                <i class="bi bi-hand-thumbs-up"></i>
+            </button>
+            <button id="thumbDown" class="btn btn-sm btn-outline-danger ms-1" onclick="sendFeedback('DOWN')" title="Pas utile">
+                <i class="bi bi-hand-thumbs-down"></i>
+            </button>
+            <span id="feedbackThanks" class="text-success small ms-2 d-none">
+                <i class="bi bi-check-circle me-1"></i>Merci pour votre retour&nbsp;!
+            </span>
+        </div>
     </div>
 
     <div id="error" class="alert alert-danger d-none mt-3"></div>
@@ -48,6 +60,7 @@
 
 <script>
     const askBtn = document.getElementById('askBtn');
+    let currentRequestId = null;
 
     async function ask() {
         const question = document.getElementById('question').value.trim();
@@ -75,6 +88,13 @@
                 ? sources.map(s => '<span class="badge bg-secondary me-1">' + s + '</span>').join('')
                 : '<span class="text-muted small">aucune</span>';
 
+            // feedback : on rattache le requestId et on réarme les boutons
+            currentRequestId = data.requestId || null;
+            document.getElementById('feedbackThanks').classList.add('d-none');
+            document.getElementById('thumbUp').disabled = false;
+            document.getElementById('thumbDown').disabled = false;
+            document.getElementById('feedback').classList.toggle('d-none', !currentRequestId);
+
             result.classList.remove('d-none');
         } catch (e) {
             errorBox.textContent = 'Erreur : ' + e.message;
@@ -82,6 +102,24 @@
         } finally {
             askBtn.disabled  = false;
             askBtn.innerHTML = '<i class="bi bi-send me-1"></i>Demander';
+        }
+    }
+
+    async function sendFeedback(vote) {
+        if (!currentRequestId) return;
+        const up = document.getElementById('thumbUp');
+        const down = document.getElementById('thumbDown');
+        up.disabled = true; down.disabled = true;
+        try {
+            const res = await fetch('/api/v1/rag/feedback', {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify({ requestId: currentRequestId, vote })
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            document.getElementById('feedbackThanks').classList.remove('d-none');
+        } catch (e) {
+            up.disabled = false; down.disabled = false;   // échec : on laisse réessayer
         }
     }
 
