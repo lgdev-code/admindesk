@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Agent de triage')}"></head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container py-4" style="max-width: 820px;">
+
+    <h1 class="h3 mb-1">
+        <i class="bi bi-diagram-3 me-2 text-primary"></i>Agent de triage
+    </h1>
+    <p class="text-muted">
+        Saisissez la demande d'un citoyen en langage naturel. L'agent identifie le type,
+        propose une priorite, un delai et les pieces a fournir, en s'appuyant sur la base
+        documentaire. <strong>Rien n'est cree</strong> sans votre validation.
+    </p>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form th:action="@{/agent/analyser}" th:object="${form}" method="post">
+                <label for="texte" class="form-label fw-semibold">Demande du citoyen</label>
+                <textarea id="texte" th:field="*{texte}" class="form-control mb-2" rows="5"
+                          placeholder="Ex. : Je veux agrandir ma maison d'une piece cote jardin, qu'est-ce qu'il me faut et en combien de temps ?"></textarea>
+                <div class="text-danger small mb-2" th:if="${#fields.hasErrors('texte')}"
+                     th:errors="*{texte}">Erreur</div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-cpu me-1"></i>Analyser la demande
+                </button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

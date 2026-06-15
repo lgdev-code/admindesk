@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Proposition de triage')}"></head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container py-4" style="max-width: 860px;">
+
+    <h1 class="h3 mb-3">
+        <i class="bi bi-diagram-3 me-2 text-primary"></i>Proposition de triage
+    </h1>
+
+    <div class="card shadow-sm mb-3">
+        <div class="card-header text-muted small">Demande analysee</div>
+        <div class="card-body"><pre class="description mb-0" th:text="${demande}">...</pre></div>
+    </div>
+
+    <!-- Proposition de l'agent -->
+    <div class="ia-block mb-3">
+        <div class="fw-semibold mb-3"><i class="bi bi-robot me-1"></i>Proposition de l'agent</div>
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Type de demande</dt>
+            <dd class="col-sm-9" th:text="${proposition.typeDemande}">...</dd>
+
+            <dt class="col-sm-3">Priorite</dt>
+            <dd class="col-sm-9" th:text="${proposition.priorite}">...</dd>
+
+            <dt class="col-sm-3">Resume</dt>
+            <dd class="col-sm-9" th:text="${proposition.resume}">...</dd>
+
+            <dt class="col-sm-3">Delai indicatif</dt>
+            <dd class="col-sm-9"><span th:text="${proposition.delaiIndicatifJours}">0</span> jours</dd>
+
+            <dt class="col-sm-3">Pieces requises</dt>
+            <dd class="col-sm-9">
+                <ul class="mb-0">
+                    <li th:each="p : ${proposition.piecesRequises}" th:text="${p}">...</li>
+                </ul>
+            </dd>
+
+            <dt class="col-sm-3">Justification</dt>
+            <dd class="col-sm-9" th:text="${proposition.justification}">...</dd>
+
+            <dt class="col-sm-3">Sources</dt>
+            <dd class="col-sm-9">
+                <span th:each="s : ${proposition.sources}" class="badge bg-secondary me-1"
+                      th:text="${s}">...</span>
+                <span th:if="${#lists.isEmpty(proposition.sources)}" class="text-muted">aucune</span>
+            </dd>
+        </dl>
+    </div>
+
+    <!-- Trace de raisonnement : les outils que l'agent a choisi d'appeler -->
+    <div class="card shadow-sm mb-3">
+        <div class="card-header text-muted small">
+            <i class="bi bi-terminal me-1"></i>Trace de raisonnement de l'agent (outils appeles)
+        </div>
+        <div class="card-body bg-dark text-success font-monospace small">
+            <div th:each="appel, it : ${trace}">
+                <span class="text-secondary" th:text="${it.index + 1} + '. '">1. </span><span th:text="${appel}">...</span>
+            </div>
+            <div th:if="${#lists.isEmpty(trace)}" class="text-secondary">Aucun outil appele.</div>
+        </div>
+    </div>
+
+    <!-- Human-in-the-loop : rien n'est cree tant qu'un humain ne valide pas -->
+    <div class="alert alert-warning d-flex align-items-center">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <div>Aucune demande n'a encore ete creee. L'agent a seulement propose un routage.
+            Verifiez, completez l'identite du demandeur, puis validez.</div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form th:action="@{/agent/valider}" method="post" class="row g-3">
+                <input type="hidden" name="typeDemande"  th:value="${proposition.typeDemande}"/>
+                <input type="hidden" name="priorite"     th:value="${proposition.priorite}"/>
+                <input type="hidden" name="description"  th:value="${demande}"/>
+
+                <div class="col-md-6">
+                    <label class="form-label">Nom du demandeur</label>
+                    <input type="text" name="nomDemandeur" class="form-control" required/>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Email du demandeur</label>
+                    <input type="email" name="emailDemandeur" class="form-control" required/>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Telephone (optionnel)</label>
+                    <input type="text" name="telephoneDemandeur" class="form-control"/>
+                </div>
+
+                <div class="col-12 d-flex gap-2">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check2-circle me-1"></i>Valider et creer la demande
+                    </button>
+                    <a th:href="@{/agent}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle me-1"></i>Rejeter et recommencer
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
