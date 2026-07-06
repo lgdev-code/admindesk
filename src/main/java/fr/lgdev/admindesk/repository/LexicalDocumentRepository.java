@@ -6,6 +6,7 @@ import fr.lgdev.admindesk.service.rag.DocumentRetriever;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.document.Document;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -21,6 +22,7 @@ import java.util.Map;
  * Le reste de l'application n'en voit que {@link DocumentRetriever}.
  */
 @Repository
+@Profile("prod")
 @Slf4j
 public class LexicalDocumentRepository implements DocumentRetriever {
 

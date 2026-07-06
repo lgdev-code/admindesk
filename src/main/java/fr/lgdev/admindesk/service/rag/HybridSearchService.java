@@ -3,6 +3,7 @@ package fr.lgdev.admindesk.service.rag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.document.Document;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import java.util.Map;
  * Aucune dépendance à SQL ni à Spring AI ici : logique pure, donc directement testable.
  */
 @Service
+@Profile("prod")
 @Slf4j
 public class HybridSearchService {
 

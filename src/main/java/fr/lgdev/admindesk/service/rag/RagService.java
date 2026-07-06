@@ -4,6 +4,7 @@ import fr.lgdev.admindesk.dto.RagResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
  * reste du flux (contexte, system strict, sources) est identique.
  */
 @Service
+@Profile("prod")
 @RequiredArgsConstructor
 @Slf4j
 public class RagService {

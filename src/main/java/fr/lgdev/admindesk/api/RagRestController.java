@@ -7,6 +7,7 @@ import fr.lgdev.admindesk.service.rag.RagService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/v1/rag")
+@Profile("prod")
 @RequiredArgsConstructor
 @Tag(name = "RAG", description = "Questions/réponses sourcées sur la base documentaire (RAG)")
 public class RagRestController {

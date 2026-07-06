@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  * Isolé derrière {@link DocumentRetriever} pour que l'orchestration ne connaisse pas Spring AI.
  */
 @Component
+@Profile("prod")
 @RequiredArgsConstructor
 public class SemanticRetriever implements DocumentRetriever {
 

@@ -1,5 +1,6 @@
 package fr.lgdev.admindesk.web;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  * ce controller ne fait que servir le template, il ne porte aucune logique RAG.
  */
 @Controller
+@Profile("prod")
 public class RagViewController {
 
     @GetMapping("/rag")
