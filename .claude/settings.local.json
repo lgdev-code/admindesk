@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(claude mcp *)",
+      "Bash(curl -s -N -o /dev/null -w \"%{http_code}\" -m 2 -H \"Accept: text/event-stream\" http://localhost:8080/sse)",
+      "mcp__admindesk__countDemandes",
+      "mcp__admindesk__searchDemandes",
+      "mcp__admindesk__getMostUrgentDemande"
+    ]
+  }
+}
