@@ -92,10 +92,10 @@ VALUES
 
 -- 12
 ('DEM-2025-00012', 'Monique Blanc', 'monique.blanc@outlook.fr', '06 55 66 77 88',
- 'VOIRIE',
- 'Le lampadaire situé devant le numéro 17 rue des Acacias est en panne depuis plus de 3 semaines. Cette zone est particulièrement sombre la nuit et représente un risque pour la sécurité des piétons, notamment les personnes âgées et les enfants qui rentrent de l''école. J''ai déjà signalé ce problème par téléphone il y a deux semaines sans résultat. Je sollicite une intervention rapide.',
+ 'AUTRE',
+ 'J''ai acheté du matériel dans une boutique privée du centre-ville et je souhaite que la mairie oblige le commerçant à me rembourser. Le magasin refuse de reprendre l''article car l''emballage a été ouvert et le délai d''échange est dépassé. Je ne souhaite pas contacter le service client ni engager de démarche de médiation. Je demande uniquement que la mairie intervienne directement pour faire pression sur le commerçant et obtenir mon remboursement.',
  'REJETE', 'NORMALE', 'Thomas Bernard',
- 'Transféré au service intercommunal d''éclairage public – hors compétence municipale. Coordonnées transmises au demandeur.',
+ 'Hors périmètre : litige commercial privé ne relevant pas d''un service administratif municipal.',
  CURRENT_TIMESTAMP - INTERVAL '22' DAY, CURRENT_TIMESTAMP - INTERVAL '18' DAY),
 
 -- 13
