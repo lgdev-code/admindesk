@@ -38,11 +38,16 @@ public class LexicalDocumentRepository implements DocumentRetriever {
 
     @Override
     public List<Document> retrieve(String query, int topK) {
+        // plainto_tsquery relie tous les mots de la question par des ET (AND) : un chunk
+        // qui ne reprend pas litteralement chaque mot (verbes, mots generiques...) est
+        // exclu, meme s'il contient le terme distinctif recherche (ex: un numero d'article).
+        // On reconstruit la meme liste de lexemes mais reliee par des OU (OR) : ts_rank
+        // continue de classer par pertinence, sans qu'un mot manquant elimine le chunk.
         String sql = """
                 SELECT id, content, metadata,
-                       ts_rank(to_tsvector('french', content), plainto_tsquery('french', ?)) AS rank
+                       ts_rank(to_tsvector('french', content), to_tsquery('french', array_to_string(tsvector_to_array(to_tsvector('french', ?)), ' | '))) AS rank
                 FROM %s.vector_store
-                WHERE to_tsvector('french', content) @@ plainto_tsquery('french', ?)
+                WHERE to_tsvector('french', content) @@ to_tsquery('french', array_to_string(tsvector_to_array(to_tsvector('french', ?)), ' | '))
                 ORDER BY rank DESC
                 LIMIT ?
                 """.formatted(schema);
