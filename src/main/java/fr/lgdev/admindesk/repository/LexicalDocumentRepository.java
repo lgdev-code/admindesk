@@ -38,6 +38,8 @@ public class LexicalDocumentRepository implements DocumentRetriever {
 
     @Override
     public List<Document> retrieve(String query, int topK) {
+        // on peut utiliser plainto_tsquery qui relie tous les mots de la question par des ET (AND)
+        // car query ne contient que les mots clés
         String sql = """
                 SELECT id, content, metadata,
                        ts_rank(to_tsvector('french', content), plainto_tsquery('french', ?)) AS rank

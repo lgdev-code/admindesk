@@ -1,0 +1,11 @@
+target/
+.git/
+.idea/
+.vscode/
+*.log
+logs/
+src/main/resources/application-local.properties
+src/main/resources/application-local.yml
+.env
+.env.*
+!.env.example

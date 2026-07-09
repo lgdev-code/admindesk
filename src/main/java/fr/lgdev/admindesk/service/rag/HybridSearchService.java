@@ -24,18 +24,25 @@ public class HybridSearchService {
 
     private final DocumentRetriever semanticRetriever;
     private final DocumentRetriever lexicalRetriever;
+    private final LexicalKeywordExtractor keywordExtractor;
 
     public HybridSearchService(
             @Qualifier("semanticRetriever") DocumentRetriever semanticRetriever,
-            @Qualifier("lexicalDocumentRepository") DocumentRetriever lexicalRetriever) {
+            @Qualifier("lexicalDocumentRepository") DocumentRetriever lexicalRetriever,
+            LexicalKeywordExtractor keywordExtractor) {
         this.semanticRetriever = semanticRetriever;
         this.lexicalRetriever = lexicalRetriever;
+        this.keywordExtractor = keywordExtractor;
     }
 
     public List<Document> hybridSearch(String question, int topK) {
         List<Document> semantic = semanticRetriever.retrieve(question, CANDIDATES);
-        List<Document> lexical = lexicalRetriever.retrieve(question, CANDIDATES);
-        log.info("Hybride: {} sémantiques + {} lexicaux", semantic.size(), lexical.size());
+        // La recherche lexicale porte sur les mots-cles extraits par LLM, pas sur la
+        // question brute : evite qu'un mot generique absent du chunk n'exclue le bon document.
+        String lexicalQuery = keywordExtractor.extractKeywords(question);
+        List<Document> lexical = lexicalRetriever.retrieve(lexicalQuery, CANDIDATES);
+        log.info("Hybride: {} sémantiques + {} lexicaux (mots-clés: '{}')",
+                semantic.size(), lexical.size(), lexicalQuery);
         return reciprocalRankFusion(List.of(semantic, lexical), topK);
     }
 
